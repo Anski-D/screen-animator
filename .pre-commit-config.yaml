@@ -1,42 +1,58 @@
-# See https://pre-commit.com for more information
-# See https://pre-commit.com/hooks.html for more hooks
 repos:
 -   repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v5.0.0
+    rev: v6.0.0  # Use the ref you want to point at
     hooks:
-    -   id: trailing-whitespace
-    -   id: end-of-file-fixer
-    -   id: mixed-line-ending
     -   id: check-added-large-files
-    -   id: check-yaml
     -   id: check-ast
-    -   id: check-docstring-first
+    -   id: check-case-conflict
+    -   id: check-executables-have-shebangs
+    -   id: check-illegal-windows-names
+    -   id: check-json
+    -   id: check-shebang-scripts-are-executable
+    -   id: check-symlinks
+    -   id: check-toml
+    -   id: check-xml
+    -   id: check-yaml
+    -   id: debug-statements
+    -   id: detect-private-key
+    -   id: end-of-file-fixer
+    -   id: fix-byte-order-marker
+    -   id: mixed-line-ending
+        args: [ --fix=lf ]
+    -   id: name-tests-test
+        args: [ --pytest-test-first ]
+    -   id: pretty-format-json
+    -   id: trailing-whitespace
 -   repo: https://github.com/astral-sh/uv-pre-commit
-    rev: 0.5.22
+    # uv version.
+    rev: 0.12.9
     hooks:
     -   id: uv-lock
 -   repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v1.14.1
+    rev: v2.3.1
     hooks:
     -   id: mypy
-        files: ^src/
 -   repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.9.2
+    # Ruff version.
+    rev: v0.16.4
     hooks:
-    -   id: ruff
-        files: ^src/
+    # Run the linter.
+    -   id: ruff-check
+        types_or: [ python, pyproject ]
+        args: [ --fix ]
+    # Run the formatter.
     -   id: ruff-format
 -   repo: local
     hooks:
     -   id: tox check not slow
-        name: tox-check-pre-commit
+        name: tox check pre-commit
         entry: tox -p -- -m "not slow"
         language: system
         pass_filenames: false
         stages:
             - pre-commit
     -   id: tox check
-        name: tox-pre-push
+        name: tox check pre-push
         entry: tox -p
         language: system
         pass_filenames: false

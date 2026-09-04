@@ -25,15 +25,15 @@ copy_examples = "screen_animator:copy_examples"
 
 [dependency-groups]
 dev = [
-    "mypy>=1.13.0",
-    "pre-commit>=4.0.1",
-    "ruff>=0.9.2",
-    "tox>=4.21.2",
+    "mypy>=2.1.0",
+    "pre-commit>=4.6.2",
+    "ruff>=0.15.14",
+    "tox>=4.60.1",
 ]
 test = [
-    "pytest-cov>=5.0.0",
-    "pytest-sugar>=1.0.0",
-    "pytest>=8.3.3",
+    "pytest>=9.0.3",
+    "pytest-cov>=7.1.0",
+    "pytest-sugar>=1.1.1",
 ]
 
 [build-system]
