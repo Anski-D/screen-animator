@@ -1,8 +1,9 @@
 [project]
-name = "screen_animator"
-version = "0.13.2"
+name = "screen-animator"
 description = "Python app to generate animated messages and images on a screen, with a focus on the Raspberry Pi."
-license = { file = "LICENSE" }
+dynamic = ["version"]
+license="MIT"
+license-files = ["LICEN[CS]E*"]
 authors = [
     { name="Dave Anscombe", email="dave.anski@gmail.com" },
 ]
@@ -22,10 +23,6 @@ dependencies = [
 screen_animator = "screen_animator.__main__:main"
 copy_examples = "screen_animator:copy_examples"
 
-[build-system]
-requires = ["hatchling"]
-build-backend = "hatchling.build"
-
 [dependency-groups]
 dev = [
     "mypy>=1.13.0",
@@ -38,3 +35,10 @@ test = [
     "pytest-sugar>=1.0.0",
     "pytest>=8.3.3",
 ]
+
+[build-system]
+requires = ["hatchling", "hatch-vcs"]
+build-backend = "hatchling.build"
+
+[tool.hatch.version]
+source = "vcs"
