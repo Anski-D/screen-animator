@@ -1,0 +1,4 @@
+[pytest]
+addopts = ["--cov=screen_animator"]
+testpaths = ["tests"]
+markers = ["slow"]
