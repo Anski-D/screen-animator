@@ -20,7 +20,6 @@ dependencies = [
 
 [project.scripts]
 screen_animator = "screen_animator.__main__:main"
-copy_examples = "screen_animator:copy_examples"
 
 [dependency-groups]
 dev = [

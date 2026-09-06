@@ -1,31 +1,31 @@
-# Screen_Animator
+# Screen-Animator
 
-![GitHub Release](https://img.shields.io/github/v/release/Anski-D/screen_animator)
-![GitHub License](https://img.shields.io/github/license/Anski-D/screen_animator)
-![Python Version from PEP 621 TOML](https://img.shields.io/python/required-version-toml?tomlFilePath=https%3A%2F%2Fraw.githubusercontent.com%2FAnski-D%2Fscreen_animator%2Frefs%2Fheads%2Fmain%2Fpyproject.toml)
+![GitHub Release](https://img.shields.io/github/v/release/Anski-D/screen-animator)
+![GitHub License](https://img.shields.io/github/license/Anski-D/screen-animator)
+![Python Version from PEP 621 TOML](https://img.shields.io/python/required-version-toml?tomlFilePath=https%3A%2F%2Fraw.githubusercontent.com%2FAnski-D%2Fscreen-animator%2Frefs%2Fheads%2Fmain%2Fpyproject.toml)
 [![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit)](https://github.com/pre-commit/pre-commit)
 
-`Screen_Animator` is a Python package to generate animated messages and images on a screen, with a focus on the Raspberry Pi.
+`screen-animator` is a Python package to generate animated messages and images on a screen, with a focus on the Raspberry Pi.
 
 The package uses an input and image files to generate messages that scroll right-to-left, and images that will randomly position themselves in the background, all while the colors continually change.
 
-`Screen_Animator` makes extensive use of the [Pygame Community Edition](https://pyga.me/) (`pygame-ce`) package.
+`screen-animator` makes extensive use of the [Pygame Community Edition](https://pyga.me/) (`pygame-ce`) package.
 
 ## Prerequisites
 
 Consider the following before using the app:
 * You have a machine which supports graphical output.
 * You have an appropriate operating system. The app is primarily designed for use on a Raspberry Pi, but will work on Linux or Windows PCs.
-* You have Python version 3.10 or higher.
+* You have Python version 3.13 or higher.
 * You have read the guidance for using the app, below.
 
 ## Installation
-It is recommended you install `Screen_Animator` into its own virtual environment. Guidance on setting up virtual environments is available online.
+It is recommended you install `screen-animator` into its own virtual environment. Guidance on setting up virtual environments is available online.
 
 Then install the package:
 
 ```commandline
-pip install git+https://github.com/Anski-D/screen_animator.git
+pip install git+https://github.com/Anski-D/screen-animator.git
 ```
 
 Alternatively, you can clone the package and deal with it as you wish.
@@ -167,4 +167,4 @@ Contact me at <dave.anski@gmail.com>.
 
 ## License
 
-This project uses the following license: [MIT](https://github.com/Anski-D/screen_animator/blob/main/LICENSE)
+This project uses the following license: [MIT](https://github.com/Anski-D/screen-animator/blob/main/LICENSE)
