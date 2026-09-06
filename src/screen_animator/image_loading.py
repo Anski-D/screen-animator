@@ -1,7 +1,7 @@
-from io import BytesIO
-from pathlib import Path
 import logging
 from abc import ABC, abstractmethod
+from io import BytesIO
+from pathlib import Path
 
 import cairosvg
 import pygame as pg

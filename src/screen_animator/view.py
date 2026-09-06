@@ -4,8 +4,9 @@ from typing import Any
 
 import pygame as pg
 
-from .listener import Listener
 from screen_animator.model import Model
+
+from .listener import Listener
 
 log = logging.getLogger(__name__)
 

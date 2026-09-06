@@ -2,10 +2,10 @@ import logging
 import random
 from abc import ABC, abstractmethod
 
-import pygame as pg
 import numpy as np
+import pygame as pg
 
-from screen_animator.items import ScrollingMovement, RandomMovement, Item, Direction
+from screen_animator.items import Direction, Item, RandomMovement, ScrollingMovement
 from screen_animator.settings import SettingsManager
 
 log = logging.getLogger(__name__)
@@ -183,8 +183,8 @@ class LeftScrollingTextItemGroup(ItemGroup):
             self._perimeter,
             self._scrolling_movement,
         )
-        setattr(message, "message_text", message_text)
-        setattr(message, "font", messages_dict["font"])
+        message.message_text = message_text
+        message.font = messages_dict["font"]
         message.rect.midleft = start_position
         message.rect.x += messages_dict["outline_width"]
 

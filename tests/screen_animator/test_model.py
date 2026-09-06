@@ -1,8 +1,8 @@
-import pytest
 import pygame as pg
+import pytest
 
-from screen_animator.model import Model
 from screen_animator.item_groups import ItemGroup
+from screen_animator.model import Model
 from screen_animator.settings import SettingsManager
 from screen_animator.speed_changer import SpeedChanger
 

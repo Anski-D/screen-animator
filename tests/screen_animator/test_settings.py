@@ -1,8 +1,8 @@
-import pytest
 import pygame as pg
+import pytest
 
-from screen_animator.settings import SettingsImporter, SettingsManager
 from screen_animator.image_loading import ImageLoader
+from screen_animator.settings import SettingsImporter, SettingsManager
 
 
 class TestSettingsImporter:

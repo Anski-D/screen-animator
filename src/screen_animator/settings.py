@@ -1,8 +1,8 @@
-from pathlib import Path
-import random
 import logging
+import random
 from collections.abc import Iterable, MutableMapping
 from os import PathLike
+from pathlib import Path
 from typing import Any
 
 import pygame as pg

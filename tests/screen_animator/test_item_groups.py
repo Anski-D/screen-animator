@@ -1,16 +1,16 @@
 import math
 import time
 
-import pytest
 import pygame as pg
+import pytest
 
-from screen_animator.settings import SettingsManager
 from screen_animator.item_groups import (
-    TimedItemGroup,
+    ColorChangeItemGroup,
     LeftScrollingTextItemGroup,
     RandomImagesItemGroup,
-    ColorChangeItemGroup,
+    TimedItemGroup,
 )
+from screen_animator.settings import SettingsManager
 
 
 @pytest.fixture

@@ -1,16 +1,16 @@
-from typing import Callable
+from collections.abc import Callable
 
 import pytest
 
 from screen_animator.items import ScrollingMovement, Speeder
 from screen_animator.speed_changer import (
-    SpeedChanger,
-    Speed,
-    SpeedAction,
+    DecreaseSpeedAction,
+    IncreaseSpeedAction,
     MaintainSpeedAction,
     ResetSpeedAction,
-    IncreaseSpeedAction,
-    DecreaseSpeedAction,
+    Speed,
+    SpeedAction,
+    SpeedChanger,
 )
 
 

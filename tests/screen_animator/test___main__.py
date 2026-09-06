@@ -1,4 +1,3 @@
-import pytest
 import pygame as pg
 
 from screen_animator.__main__ import _set_display_size

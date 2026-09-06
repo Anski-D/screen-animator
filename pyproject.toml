@@ -9,7 +9,7 @@ authors = [
 ]
 readme = "README.md"
 repository = "https://github.com/Anski-D/screen_animator"
-requires-python = ">=3.10"
+requires-python = ">=3.13"
 dependencies = [
     "cairosvg>=2.7.1",
     "mergedeep>=1.3.4",
@@ -27,7 +27,7 @@ copy_examples = "screen_animator:copy_examples"
 dev = [
     "mypy>=2.1.0",
     "pre-commit>=4.6.2",
-    "ruff>=0.15.14",
+    "ruff>=0.16.6",
     "tox>=4.60.1",
 ]
 test = [

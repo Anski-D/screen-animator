@@ -1,29 +1,28 @@
 import argparse
-from functools import partial
 from collections.abc import Callable
+from functools import partial
 
 import pygame as pg
 
-from screen_animator.log_setup import setup_logging
 from screen_animator.controller import Controller, EventManager, QuitAction
-from screen_animator.item_groups import (
-    ItemGroup,
-    TimedItemGroup,
-    LeftScrollingTextItemGroup,
-    ColorChangeItemGroup,
-    RandomImagesItemGroup,
-    FpsCounterItemGroup,
-)
 from screen_animator.image_loading import ImageLoader, SvgTypeImageLoader
+from screen_animator.item_groups import (
+    ColorChangeItemGroup,
+    FpsCounterItemGroup,
+    ItemGroup,
+    LeftScrollingTextItemGroup,
+    RandomImagesItemGroup,
+    TimedItemGroup,
+)
+from screen_animator.log_setup import setup_logging
 from screen_animator.model import Model
 from screen_animator.settings import SettingsManager
-from screen_animator.view import View
 from screen_animator.speed_changer import (
-    ResetSpeedAction,
-    IncreaseSpeedAction,
     DecreaseSpeedAction,
+    IncreaseSpeedAction,
+    ResetSpeedAction,
 )
-
+from screen_animator.view import View
 
 DEBUG_DISPLAY_SIZE = 800, 400
 ITEM_GROUP_TYPES: list[Callable[[SettingsManager, pg.Rect], ItemGroup]] = [

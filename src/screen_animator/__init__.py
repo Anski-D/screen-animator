@@ -1,6 +1,6 @@
 import importlib.resources
-import shutil
 import logging
+import shutil
 from pathlib import Path
 
 from screen_animator import example

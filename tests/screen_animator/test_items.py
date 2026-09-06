@@ -1,7 +1,7 @@
 import pygame as pg
 import pytest
 
-from screen_animator.items import Item, ScrollingMovement, RandomMovement, Direction
+from screen_animator.items import Direction, Item, RandomMovement, ScrollingMovement
 
 
 @pytest.fixture

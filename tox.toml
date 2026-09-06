@@ -1,7 +1,7 @@
 env_list = [
     { product = [
-            {prefix = "3.", start = 10, stop = 14},
-            {prefix = "pygame2.", start = 3, stop = 5},
+            {prefix = "3.", start = 13, stop = 14},
+            {prefix = "pygame2.", start = 5, stop = 5},
     ] },
 ]
 
@@ -11,8 +11,6 @@ deps = [
     "pytest>=9",
     "pytest-cov",
     "pytest-sugar",
-    { replace = "if", condition = "factor['pygame2.3']", then = ["pygame-ce>=2.3,<2.4"], extend = true },
-    { replace = "if", condition = "factor['pygame2.4']", then = ["pygame-ce>=2.4,<2.5"], extend = true },
     { replace = "if", condition = "factor['pygame2.5']", then = ["pygame-ce>=2.5,<2.6"], extend = true },
 ]
 commands = [["pytest", { replace = "posargs", extend = true }]]

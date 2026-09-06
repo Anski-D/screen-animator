@@ -1,5 +1,5 @@
-import random
 import logging
+import random
 from enum import Enum, auto
 from typing import Protocol, runtime_checkable
 

@@ -1,10 +1,10 @@
 import logging
-from collections.abc import Iterable, Callable
+from collections.abc import Callable, Iterable
 
 import pygame as pg
 
-from screen_animator.settings import SettingsManager
 from screen_animator.item_groups import ItemGroup
+from screen_animator.settings import SettingsManager
 from screen_animator.speed_changer import SpeedChanger, Speeder
 
 log = logging.getLogger(__name__)
