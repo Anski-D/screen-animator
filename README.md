@@ -20,15 +20,19 @@ Consider the following before using the app:
 * You have read the guidance for using the app, below.
 
 ## Installation
-It is recommended you install `screen-animator` into its own virtual environment. Guidance on setting up virtual environments is available online.
 
-Then install the package:
+Firstly you should clone this repo and change into its directory:
 
-```commandline
-pip install git+https://github.com/Anski-D/screen-animator.git
+```shell
+git clone https://github.com/Anski-D/screen-animator.git
+cd screen-animator
 ```
 
-Alternatively, you can clone the package and deal with it as you wish.
+It is recommended you install into a virtual environment. Once your virtual environment is active, run:
+
+```shell
+pip install .
+```
 
 ### Additional dependencies on Raspberry Pi
 
@@ -38,20 +42,16 @@ You might find additional dependencies are required on Raspberry Pi OS (as well 
 > Installing the dependencies should be enough, cloning and building `pygame-ce` should not be necessary.
 
 ## Usage
+
+In the cloned repo, example input `TOML` files are included in the `examples` directory. The examples show the inputs split across three files (inputs_*X*.toml) and also as a single file, inputs_all.toml.
 If the package is installed as recommended above, a command line script will be available that will copy an example `inputs.toml` file into your current directory.
-
-Simply run:
-
-```commandline
-copy_examples
-```
 
 [Further information for specifying inputs in `inputs.toml` is provided.](#inputstoml)
 
 The app can then be used by simply running, in the activated virtual environment:
 
-```commandline
-screen_animator
+```shell
+screen-animator
 ```
 
 The following options can also be specified:
