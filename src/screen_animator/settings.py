@@ -8,10 +8,64 @@ import tomllib
 
 import pygame as pg
 from mergedeep import merge
+from pydantic import BaseModel
 
 from screen_animator.image_loading import ImageLoader
 
 log = logging.getLogger(__name__)
+
+
+class Colors(BaseModel):
+    colors: list[tuple[int, int, int]]
+
+
+class Messages(BaseModel):
+    messages: list[str]
+    separator: str = "    "
+    typeface: str = "freeserif"
+    sizes: list
+    bold: bool = True
+    italic: bool = False
+    anti_aliasing: bool = False
+    scroll_speed: int
+    outline_width: int = 3
+    outline_copies: int = 360
+    outline_colors: list[tuple[int, int, int]] = [(0, 0, 0)]
+    start_middle: bool = True
+
+
+class Images(BaseModel):
+    sources: list[tuple[str, int]]
+    number: int
+    reposition_attempts: int = -1
+
+
+class Timings(BaseModel):
+    fps: int = 30
+    image_change_time: int
+    color_change_time: int
+
+
+class Settings(BaseModel):
+    colors: Colors
+    messages: Messages
+    images: Images
+    timings: Timings
+
+
+def _convert_lists_to_tuples(input_item: Any) -> Any:
+    match input_item:
+        case [int(), int(), int()] | [int(), int()] | [str(), int()]:
+            return tuple(input_item)
+        case list():
+            return [_convert_lists_to_tuples(item) for item in input_item]
+        case MutableMapping():
+            return {
+                key: _convert_lists_to_tuples(value)
+                for key, value in input_item.items()
+            }
+        case _:
+            return input_item
 
 
 class SettingsImporter:
@@ -49,7 +103,7 @@ class SettingsImporter:
         self._read_settings(settings_files)
         self._validate_settings()
         log.info("Converting certain lists to tuples")
-        self._settings = self._convert_colors_to_tuples(self._settings)
+        self._settings = _convert_lists_to_tuples(self._settings)
 
         return self._settings
 
@@ -96,20 +150,6 @@ class SettingsImporter:
                 log.info("Validation successful")
             case _:
                 raise ValueError(f"Invalid configuration {self._settings}")
-
-    def _convert_colors_to_tuples(self, input_item):
-        match input_item:
-            case [int(), int(), int()] | [int(), int()] | [str(), int()]:
-                return tuple(input_item)
-            case list():
-                return [self._convert_colors_to_tuples(item) for item in input_item]
-            case MutableMapping():
-                return {
-                    key: self._convert_colors_to_tuples(value)
-                    for key, value in input_item.items()
-                }
-            case _:
-                return input_item
 
 
 class SettingsManager:
