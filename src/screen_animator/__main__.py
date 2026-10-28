@@ -128,3 +128,7 @@ def _set_display_size(display_size: tuple[float, float] | None = None) -> pg.Sur
         return pg.display.set_mode((0, 0), pg.FULLSCREEN)
 
     return pg.display.set_mode(display_size)
+
+
+if __name__ == "__main__":
+    main()
