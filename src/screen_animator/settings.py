@@ -4,16 +4,12 @@ from collections.abc import Iterable, MutableMapping
 from os import PathLike
 from pathlib import Path
 from typing import Any
+import tomllib
 
 import pygame as pg
 from mergedeep import merge
 
 from screen_animator.image_loading import ImageLoader
-
-try:
-    import tomllib
-except ModuleNotFoundError:
-    import tomli as tomllib  # type: ignore
 
 log = logging.getLogger(__name__)
 
