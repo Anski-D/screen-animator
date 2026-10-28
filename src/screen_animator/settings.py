@@ -15,10 +15,6 @@ from screen_animator.image_loading import ImageLoader
 log = logging.getLogger(__name__)
 
 
-class Colors(BaseModel):
-    colors: list[tuple[int, int, int]]
-
-
 class Messages(BaseModel):
     messages: list[str]
     separator: str = "    "
@@ -47,7 +43,7 @@ class Timings(BaseModel):
 
 
 class Settings(BaseModel):
-    colors: Colors
+    colors: list[tuple[int, int, int]]
     messages: Messages
     images: Images
     timings: Timings
@@ -78,7 +74,7 @@ class SettingsImporter:
         Imports the settings from specified files and validates imported values.
     """
 
-    _settings: MutableMapping[str, Any]
+    # _settings: MutableMapping[str, Any]
 
     def __repr__(self) -> str:
         return f"{type(self).__name__}()"
@@ -101,9 +97,11 @@ class SettingsImporter:
             The imported and validated settings.
         """
         self._read_settings(settings_files)
-        self._validate_settings()
+        # self._validate_settings()
         log.info("Converting certain lists to tuples")
         self._settings = _convert_lists_to_tuples(self._settings)
+        # colors = Colors.model_validate(self._settings["colors"])
+        self._settings = Settings.model_validate(self._settings)
 
         return self._settings
 
