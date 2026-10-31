@@ -1,7 +1,6 @@
 import logging
 import random
 from collections.abc import Iterable, MutableMapping
-from os import PathLike
 from pathlib import Path
 from typing import Any
 import tomllib
@@ -49,105 +48,35 @@ class Settings(BaseModel):
     timings: Timings
 
 
-def _convert_lists_to_tuples(input_item: Any) -> Any:
+def convert_lists_to_tuples(input_item: Any) -> Any:
+    """Converts lists with ints to tuples"""
     match input_item:
         case [int(), int(), int()] | [int(), int()] | [str(), int()]:
             return tuple(input_item)
         case list():
-            return [_convert_lists_to_tuples(item) for item in input_item]
+            return [convert_lists_to_tuples(item) for item in input_item]
         case MutableMapping():
             return {
-                key: _convert_lists_to_tuples(value)
+                key: convert_lists_to_tuples(value)
                 for key, value in input_item.items()
             }
         case _:
             return input_item
 
 
-class SettingsImporter:
-    """
-    Imports settings from TOML files and validates, ready for further use.
+def import_settings(settings_paths: Iterable[Path | str]) -> Settings:
+    """Imports settings from defined files and validates input"""
+    settings_dicts = []
+    for settings_path in settings_paths:
+        log.info("Reading settings from %s...", settings_path)
+        with Path(settings_path).open("rb") as file:
+            settings_dicts.append(tomllib.load(file))
 
-    Methods
-    -------
-    import_settings
-        Imports the settings from specified files and validates imported values.
-    """
+    settings = merge(*settings_dicts)
+    log.info("Collated settings:\n\t%s", settings)
+    settings = convert_lists_to_tuples(settings)
 
-    # _settings: MutableMapping[str, Any]
-
-    def __repr__(self) -> str:
-        return f"{type(self).__name__}()"
-
-    def import_settings(
-        self, settings_files: Iterable[str | PathLike]
-    ) -> MutableMapping[str, Any]:
-        """
-        Imports the settings from specified files, validates, and stores and
-        returns a dictionary.
-
-        Parameters
-        ----------
-        settings_files
-            Paths to the TOML files containing settings.
-
-        Returns
-        -------
-        dict
-            The imported and validated settings.
-        """
-        self._read_settings(settings_files)
-        # self._validate_settings()
-        log.info("Converting certain lists to tuples")
-        self._settings = _convert_lists_to_tuples(self._settings)
-        # colors = Colors.model_validate(self._settings["colors"])
-        self._settings = Settings.model_validate(self._settings)
-
-        return self._settings
-
-    def _read_settings(self, settings_paths: Iterable[str | PathLike]) -> None:
-        settings_dicts = []
-        for settings_path in settings_paths:
-            log.info("Reading settings from %s...", settings_path)
-            with Path(settings_path).open("rb") as file:
-                settings_dicts.append(tomllib.load(file))
-
-        self._settings = merge(*settings_dicts)
-        log.info("Collated settings:\n\t%s", self._settings)
-
-    def _validate_settings(self) -> None:
-        log.info("Validating input file matches expected format")
-        match self._settings:
-            case {
-                "colors": list(),
-                "messages": {
-                    "messages": list() | str(),
-                    "separator": str(),
-                    "typeface": str(),
-                    "sizes": list(),
-                    "bold": bool(),
-                    "italic": bool(),
-                    "anti-aliasing": bool(),
-                    "scroll_speed": int(),
-                    "outline_width": int(),
-                    "outline_copies": int(),
-                    "outline_colors": list(),
-                    "start_middle": bool(),
-                },
-                "images": {
-                    "sources": list(),
-                    "number": int(),
-                    "reposition_attempts": int(),
-                },
-                "timings": {
-                    "fps": int() | float(),
-                    "image_change_time": int() | float(),
-                    "color_change_time": int() | float(),
-                },
-            }:
-                log.info("Validation successful")
-            case _:
-                raise ValueError(f"Invalid configuration {self._settings}")
+    return Settings.model_validate(settings)
 
 
 class SettingsManager:
@@ -164,9 +93,9 @@ class SettingsManager:
         Create the `pygame` font instance for rendering text.
     """
 
-    _settings: MutableMapping[str, Any]
+    _settings: Settings
 
-    def __init__(self, settings_files: Iterable[str | PathLike]) -> None:
+    def __init__(self, settings_files: Iterable[Path | str]) -> None:
         """
         Import settings from specified file and set initial settings.
 
@@ -176,7 +105,7 @@ class SettingsManager:
             Paths to settings files.
         """
         self._settings_files = settings_files
-        self._import_settings()
+        self._settings = import_settings(self._settings_files)
         self.set_colors()
         self.set_font()
         self._load_images()
@@ -186,7 +115,7 @@ class SettingsManager:
         return f"{type(self).__name__}({self._settings_files})"
 
     @property
-    def settings(self) -> MutableMapping[str, Any]:
+    def settings(self) -> Settings:
         """Dictionary of all settings."""
         return self._settings
 
@@ -240,10 +169,6 @@ class SettingsManager:
             ),
             messages_dict["size"],
         )
-
-    def _import_settings(self) -> None:
-        importer = SettingsImporter()
-        self._settings = importer.import_settings(self._settings_files)
 
     def _load_images(self):
         images_dict = self._settings["images"]
