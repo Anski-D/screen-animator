@@ -18,7 +18,7 @@ class Messages(BaseModel):
     messages: list[str]
     separator: str = "    "
     typeface: str = "freeserif"
-    sizes: list
+    sizes: list[int]
     bold: bool = True
     italic: bool = False
     anti_aliasing: bool = False
@@ -61,7 +61,7 @@ class Settings(BaseModel):
 def convert_lists_to_tuples(input_item: Any) -> Any:
     """Converts lists with ints to tuples"""
     match input_item:
-        case [int(), int(), int()] | [int(), int()] | [str(), int()]:
+        case [int(), int(), int()] | [str(), int()]:
             return tuple(input_item)
         case list():
             return [convert_lists_to_tuples(item) for item in input_item]

@@ -1,13 +1,14 @@
 import pygame as pg
 import pytest
 
-from screen_animator.settings import SettingsManager
+from screen_animator import settings
+from screen_animator.settings import Settings
 
 pg.init()
 
 
 @pytest.fixture
-def example_settings_dict() -> dict:
+def dummy_settings_dict() -> dict:
     """Provide example settings dict prior to conversion to tuples."""
     return {
         "colors": [
@@ -55,7 +56,7 @@ def example_settings_dict() -> dict:
 
 
 @pytest.fixture
-def example_settings_dict_with_tuples(example_settings_dict: dict) -> dict:
+def dummy_settings_dict_with_tuples(dummy_settings_dict: dict) -> dict:
     """Provide example settings dict after conversion to tuples."""
     colors = [
         (255, 0, 0),
@@ -72,37 +73,34 @@ def example_settings_dict_with_tuples(example_settings_dict: dict) -> dict:
         ("pic2.bmp", -1),
         ("pic3.bmp", 64),
     ]
-    example_settings_dict["colors"] = colors
-    example_settings_dict["messages"]["sizes"] = sizes
-    example_settings_dict["messages"]["outline_colors"] = outline_colors
-    example_settings_dict["images"]["sources"] = sources
+    dummy_settings_dict["colors"] = colors
+    dummy_settings_dict["messages"]["sizes"] = sizes
+    dummy_settings_dict["messages"]["outline_colors"] = outline_colors
+    dummy_settings_dict["images"]["sources"] = sources
 
-    return example_settings_dict
+    return dummy_settings_dict
 
 
 @pytest.fixture
-def example_perimeter() -> pg.Rect:
+def dummy_settings(dummy_settings_dict_with_tuples: dict) -> Settings:
+    return Settings.model_validate(dummy_settings_dict_with_tuples)
+
+
+@pytest.fixture
+def dummy_perimeter() -> pg.Rect:
     """Provide example perimeter."""
     return pg.Rect(0, 0, 1000, 500)
 
 
 @pytest.fixture
-def example_content() -> pg.Surface:
+def dummy_content() -> pg.Surface:
     """Provide example content surface."""
     return pg.Surface((20, 10))
 
 
 @pytest.fixture
-def example_settings_manager(
-    monkeypatch, example_settings_dict_with_tuples: dict
-) -> SettingsManager:
-    """Provide an initialised `SettingsManager`."""
-    SettingsManager._settings = example_settings_dict_with_tuples
-    monkeypatch.setattr(
-        SettingsManager,
-        "_import_settings",
-        lambda *args, **kwargs: example_settings_dict_with_tuples,
-    )
-    settings_manager = SettingsManager("")
+def mock_settings(monkeypatch, dummy_settings_dict_with_tuples: dict) -> None:
+    def mock_import_settings(*args, **kwargs) -> Settings:
+        return Settings.model_validate(dummy_settings_dict_with_tuples)
 
-    return settings_manager
+    monkeypatch.setattr(settings, "import_settings", mock_import_settings)

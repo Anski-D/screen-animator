@@ -1,101 +1,80 @@
+from collections.abc import Callable
+
 import pygame as pg
 import pytest
 
-from screen_animator.image_loading import ImageLoader
-from screen_animator.settings import SettingsImporter, SettingsManager
+from screen_animator.settings import SettingsManager, Settings, convert_lists_to_tuples
+from screen_animator.settings import ImageLoader
 
 
-class TestSettingsImporter:
-    def test_validate_settings_raises_value_error(
-        self, example_settings_dict: dict
-    ) -> None:
-        """Raise `ValueError` if input settings do not match prescribed format."""
-        del example_settings_dict["colors"]
-        importer = SettingsImporter()
-        importer._settings = example_settings_dict
-        with pytest.raises(ValueError):
-            importer._validate_settings()
+def test_convert_lists_to_tuples(dummy_settings_dict: dict, dummy_settings_dict_with_tuples: dict) -> None:
+    """Lists with int values are converted to tuples."""
 
-    def test_validate_settings_passes(self, example_settings_dict: dict) -> None:
-        """Correctly formatted settings input successfully validates."""
-        importer = SettingsImporter()
-        importer._settings = example_settings_dict
+    assert convert_lists_to_tuples(dummy_settings_dict) == dummy_settings_dict_with_tuples
 
-        assert importer._validate_settings() is None
 
-    def test_convert_colors_to_tuples(
-        self, example_settings_dict: dict, example_settings_dict_with_tuples: dict
-    ) -> None:
-        """Lists of a certain format are converted to tuples."""
-        importer = SettingsImporter()
+@pytest.fixture
+def settings_manager(monkeypatch, mock_settings: Callable[[], Settings]) -> SettingsManager:
+    def mock_set_initial_settings(*args, **kwargs) -> None:
+        return None
 
-        assert (
-            importer._convert_colors_to_tuples(example_settings_dict)
-            == example_settings_dict_with_tuples
-        )
+    monkeypatch.setattr(SettingsManager, "_set_initial_settings", mock_set_initial_settings)
+
+    return SettingsManager([""])
+
+
+@pytest.fixture
+def mock_image_load(monkeypatch) -> None:
+    def mock_load_image(*args, **kwargs) -> pg.Surface:
+        return pg.Surface((20, 10))
+
+    monkeypatch.setattr(ImageLoader, "load_image", mock_load_image)
 
 
 class TestSettingsManager:
     @pytest.mark.parametrize("group", ["bg", "messages"])
     def test_set_colors(
-        self, group: pg.sprite.Group, example_settings_manager: SettingsManager
+        self, group: str, settings_manager: SettingsManager
     ) -> None:
         """Colors are set to a color option provided in settings."""
-        settings_manager = example_settings_manager
         settings_manager.set_colors()
         settings = settings_manager.settings
 
-        assert settings[group]["color"] in settings["colors"]
+        assert getattr(settings, group).color in settings.colors
 
-    def test_set_outline_color(self, example_settings_manager: SettingsManager) -> None:
+    def test_set_outline_color(self, settings_manager: SettingsManager) -> None:
         """Outline color set to color option provided in settings."""
-        settings_manager = example_settings_manager
         settings_manager.set_colors()
-        messages_dict = settings_manager.settings["messages"]
+        messages = settings_manager.settings.messages
 
-        assert messages_dict["outline_color"] in messages_dict["outline_colors"]
+        assert messages.outline_color in messages.outline_colors
 
-    def test_set_outline_colour_single_choice(
-        self, example_settings_manager: SettingsManager
-    ) -> None:
-        """Outline color set correctly when only a single option provided."""
-        settings_manager = example_settings_manager
-        outline_color = (0, 255, 0)
-        messages_dict = settings_manager.settings["messages"]
-        messages_dict["outline_colors"] = outline_color
-        settings_manager.set_colors()
-
-        assert messages_dict["outline_color"] == outline_color
-
-    def test_set_font(self, example_settings_manager: SettingsManager) -> None:
+    def test_set_font(self, settings_manager: SettingsManager) -> None:
         """`Font` instance created and added to settings."""
-        settings_manager = example_settings_manager
         settings_manager.set_font()
 
-        assert isinstance(settings_manager.settings["messages"]["font"], pg.font.Font)
+        assert isinstance(settings_manager.settings.messages.font, pg.Font)
 
     @pytest.mark.parametrize("sizes", [(10, 10), (20, 30), (50, 50), (80, 130)])
     def test_set_font_size(
-        self, sizes: tuple[int, int], example_settings_manager: SettingsManager
+        self, sizes: tuple[int, int], settings_manager: SettingsManager
     ) -> None:
         """Font size is between limits specified."""
-        settings_manager = example_settings_manager
-        messages_dict = settings_manager.settings["messages"]
-        messages_dict["sizes"] = sizes
+        messages = settings_manager.settings.messages
+        messages.sizes = list(sizes)
         settings_manager.set_font()
 
-        assert min(sizes) <= messages_dict["size"] <= max(sizes)
+        assert min(sizes) <= messages.font.point_size <= max(sizes)
 
     @pytest.mark.parametrize("repeat", range(5))
     def test_generate_text(
         self,
         repeat: int,
-        example_settings_manager: SettingsManager,
-        example_settings_dict_with_tuples: dict,
+        settings_manager: SettingsManager,
+        dummy_settings_dict_with_tuples: dict,
     ) -> None:
         """Concatenated message strings are generated."""
-        settings_manager = example_settings_manager
-        messages_dict = example_settings_dict_with_tuples["messages"]
+        messages_dict = dummy_settings_dict_with_tuples["messages"]
 
         assert settings_manager.generate_message_text() in [
             f"{message}{messages_dict['separator']}"
@@ -103,26 +82,18 @@ class TestSettingsManager:
         ]
 
     def test_generate_text_return_type(
-        self, example_settings_manager: SettingsManager
+        self, settings_manager: SettingsManager
     ) -> None:
         """Message strings generated are of correct type."""
-        settings_manager = example_settings_manager
-
         assert isinstance(settings_manager.generate_message_text(), str)
 
     def test_load_images(
         self,
-        monkeypatch,
-        example_settings_manager: SettingsManager,
-        example_settings_dict_with_tuples: dict,
+        mock_image_load,
+        settings_manager: SettingsManager,
     ) -> None:
         """Images are loaded and stored in settings."""
-        monkeypatch.setattr(
-            ImageLoader, "load_image", lambda x, y, z: pg.Surface((20, 10))
-        )
-        settings_manager = example_settings_manager
         settings_manager._load_images()
+        images = settings_manager.settings.images
 
-        assert len(settings_manager.settings["images"]["images"]) == len(
-            example_settings_dict_with_tuples["images"]["sources"]
-        )
+        assert len(images.images) == len(images.sources)
