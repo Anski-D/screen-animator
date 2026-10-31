@@ -1,7 +1,7 @@
 import logging
-from abc import ABC, abstractmethod
 from io import BytesIO
 from pathlib import Path
+from typing import Protocol
 
 import cairosvg
 import pygame as pg
@@ -10,42 +10,11 @@ from svgutils import transform as sg
 log = logging.getLogger(__name__)
 
 
-class TypeImageLoader(ABC):
-    """
-    Interface for loading images for `pygame`.
-
-    Methods
-    -------
-    load_image
-        Load an image (sublasses to implement).
-    """
-
-    def __init__(self) -> None:
-        log.info("Creating %s", self)
-
-    def __repr__(self) -> str:
-        return f"{type(self).__name__}()"
-
-    @abstractmethod
-    def load_image(self, image_loc: str, width: int = 0) -> pg.Surface | None:
-        """
-        Loads images for use in `pygame`.
-
-        Parameters
-        ----------
-        image_loc
-            Location of image file.
-        width
-            Required width in pixels of image when loaded.
-
-        Returns
-        -------
-        pg.Surface
-            Image loaded for use in `pygame`.
-        """
+class ImageTypeLoader(Protocol):
+    def load_image(self, image_loc: str, width: int = 0) -> pg.Surface | None: ...
 
 
-class RasterTypeImageLoader(TypeImageLoader):
+class RasterImageTypeLoader:
     """
     Load raster images.
 
@@ -55,7 +24,8 @@ class RasterTypeImageLoader(TypeImageLoader):
         Load a raster image to `pygame` Surface.
     """
 
-    def load_image(self, image_loc: str, width: int = 0) -> pg.Surface | None:
+    @staticmethod
+    def load_image(image_loc: str, width: int = 0) -> pg.Surface | None:
         """
         Loads raster images (e.g., BMP, JPG, PNG) for use in `pygame`.
 
@@ -95,7 +65,7 @@ class RasterTypeImageLoader(TypeImageLoader):
         return image
 
 
-class SvgTypeImageLoader(TypeImageLoader):
+class SvgImageTypeLoader:
     """
     Load SVG vector images.
 
@@ -105,7 +75,8 @@ class SvgTypeImageLoader(TypeImageLoader):
         Load a raster image to `pygame` Surface.
     """
 
-    def load_image(self, image_loc: str, width: int = 0) -> pg.Surface | None:
+    @staticmethod
+    def load_image(image_loc: str, width: int = 0) -> pg.Surface | None:
         """
         Loads SVG images for use in `pygame`.
 
@@ -158,7 +129,7 @@ class ImageLoader:
         Return a loaded image as a `pygame` Surface.
     """
 
-    _loaders: dict = {}
+    _loaders: dict[str, type[ImageTypeLoader]] = {}
 
     def __repr__(self) -> str:
         return f"{type(self).__name__}()"
@@ -184,6 +155,6 @@ class ImageLoader:
         pg.Surface
             Image loaded as `pygame` Surface.
         """
-        loader = self._loaders.get(Path(image_loc).suffix, RasterTypeImageLoader)()
+        loader = self._loaders.get(Path(image_loc).suffix, RasterImageTypeLoader)()
 
         return loader.load_image(image_loc, width)
