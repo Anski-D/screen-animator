@@ -2,6 +2,7 @@ from collections.abc import Callable
 
 import pygame as pg
 import pytest
+from pytest import MonkeyPatch
 
 from screen_animator.settings import SettingsManager, Settings, convert_lists_to_tuples
 from screen_animator.settings import ImageLoader
@@ -14,7 +15,7 @@ def test_convert_lists_to_tuples(dummy_settings_dict: dict, dummy_settings_dict_
 
 
 @pytest.fixture
-def settings_manager(monkeypatch, mock_settings: Callable[[], Settings]) -> SettingsManager:
+def settings_manager(monkeypatch: MonkeyPatch, mock_settings: Callable[[], Settings]) -> SettingsManager:
     def mock_set_initial_settings(*args, **kwargs) -> None:
         return None
 
@@ -24,7 +25,7 @@ def settings_manager(monkeypatch, mock_settings: Callable[[], Settings]) -> Sett
 
 
 @pytest.fixture
-def mock_image_load(monkeypatch) -> None:
+def mock_image_load(monkeypatch: MonkeyPatch) -> None:
     def mock_load_image(*args, **kwargs) -> pg.Surface:
         return pg.Surface((20, 10))
 

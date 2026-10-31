@@ -1,5 +1,6 @@
 import pygame as pg
 import pytest
+from pytest import MonkeyPatch
 
 from screen_animator import settings
 from screen_animator.settings import Settings
@@ -99,7 +100,7 @@ def dummy_content() -> pg.Surface:
 
 
 @pytest.fixture
-def mock_settings(monkeypatch, dummy_settings_dict_with_tuples: dict) -> None:
+def mock_settings(monkeypatch: MonkeyPatch, dummy_settings_dict_with_tuples: dict) -> None:
     def mock_import_settings(*args, **kwargs) -> Settings:
         return Settings.model_validate(dummy_settings_dict_with_tuples)
 
