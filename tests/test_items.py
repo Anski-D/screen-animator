@@ -5,19 +5,19 @@ from screen_animator.items import Direction, Item, RandomMovement, ScrollingMove
 
 
 @pytest.fixture
-def example_item(example_content: pg.Surface, example_perimeter: pg.Rect) -> Item:
+def dummy_item(dummy_content: pg.Surface, dummy_perimeter: pg.Rect) -> Item:
     """Provide example `Item` by removing abstract methods."""
-    return Item(pg.sprite.Group(), example_content, example_perimeter)
+    return Item(pg.sprite.Group(), dummy_content, dummy_perimeter)
 
 
 class TestItem:
-    def test_content_return_type(self, example_item) -> None:
+    def test_content_return_type(self, dummy_item: Item) -> None:
         """Content is of correct type."""
-        assert isinstance(example_item.content, pg.Surface)
+        assert isinstance(dummy_item.content, pg.Surface)
 
-    def test_content_setter(self, example_item) -> None:
+    def test_content_setter(self, dummy_item: Item) -> None:
         """Content setter sets correctly."""
-        assert example_item.rect == pg.Rect(0, 0, 20, 10)
+        assert dummy_item.rect == pg.Rect(0, 0, 20, 10)
 
 
 class TestScrollingMovement:
@@ -50,10 +50,10 @@ class TestScrollingMovement:
         ],
     )
     def test_move(
-        self, speed: int, direction: Direction, value: int, example_item: Item
+        self, speed: int, direction: Direction, value: int, dummy_item: Item
     ) -> None:
         """Move in certain amount in correct direction."""
-        item = example_item
+        item = dummy_item
         item.rect.topleft = item.perimeter.center
         movement = ScrollingMovement(speed, direction)
         movement.move(item)
@@ -65,17 +65,17 @@ class TestScrollingMovement:
 
 class TestRandomMovement:
     @pytest.mark.parametrize("repeat", range(5))
-    def test_move_perimeter_contains(self, repeat: int, example_item: Item) -> None:
+    def test_move_perimeter_contains(self, repeat: int, dummy_item: Item) -> None:
         """Random movement confined to perimeter."""
-        item = example_item
+        item = dummy_item
         movement = RandomMovement()
         movement.move(item)
 
         assert item.perimeter.contains(item.rect)
 
-    def test_move_repeat_move(self, example_item: Item) -> None:
+    def test_move_repeat_move(self, dummy_item: Item) -> None:
         """Subsequent random movements result in different resulting locations."""
-        item = example_item
+        item = dummy_item
         movement = RandomMovement()
         movement.move(item)
         rect1 = item.rect.copy()
