@@ -45,14 +45,14 @@ repos:
 -   repo: local
     hooks:
     -   id: tox pytest not slow
-        name: tox pytest pre-commit
+        name: tox pytest not slow
         entry: tox -- -m "not slow"
         language: system
         pass_filenames: false
         stages:
             - pre-commit
     -   id: tox pytest slow
-        name: tox pytest pre-push
+        name: tox pytest slow
         entry: tox
         language: system
         pass_filenames: false
