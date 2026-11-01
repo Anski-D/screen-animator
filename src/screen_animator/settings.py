@@ -7,7 +7,7 @@ import tomllib
 
 import pygame as pg
 from mergedeep import merge
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 from screen_animator.image_loading import ImageLoader
 
@@ -15,6 +15,8 @@ log = logging.getLogger(__name__)
 
 
 class Messages(BaseModel):
+    model_config = ConfigDict(arbitrary_types_allowed=True)
+
     messages: list[str]
     separator: str = "    "
     typeface: str = "freeserif"
@@ -29,14 +31,16 @@ class Messages(BaseModel):
     outline_color: tuple[int, int, int] = (127, 127, 127)
     start_middle: bool = True
     color: tuple[int, int, int] = (255, 255, 255)
-    font: None = None
+    font: pg.Font | None = None
 
 
 class Images(BaseModel):
+    model_config = ConfigDict(arbitrary_types_allowed=True)
+
     sources: list[tuple[str, int]]
     number: int
     reposition_attempts: int = -1
-    images: list = []
+    images: list[pg.Surface] = []
 
 
 class Timings(BaseModel):
