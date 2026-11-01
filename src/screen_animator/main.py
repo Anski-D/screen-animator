@@ -39,7 +39,7 @@ EVENT_TYPES: list[tuple[int, int] | int] = [
 ]
 
 
-def main() -> None:
+def run_app() -> None:
     """Main app function to run."""
     pg.init()
     args = _parse_args()
@@ -131,4 +131,4 @@ def _set_display_size(display_size: tuple[float, float] | None = None) -> pg.Sur
 
 
 if __name__ == "__main__":
-    main()
+    run_app()

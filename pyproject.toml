@@ -20,7 +20,7 @@ dependencies = [
 ]
 
 [project.scripts]
-screen-animator = "screen_animator.__main__:main"
+screen-animator = "screen_animator.main:run_app"
 
 [dependency-groups]
 dev = [
