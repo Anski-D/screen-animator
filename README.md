@@ -48,10 +48,10 @@ If the package is installed as recommended above, a command line script will be 
 
 [Further information for specifying inputs in `inputs.toml` is provided.](#inputstoml)
 
-The app can then be used by simply running, in the activated virtual environment:
+The app can then be used by simply running (virtual environment activation is not necessary):
 
 ```shell
-screen-animator
+./run_screen-animator.sh
 ```
 
 The following options can also be specified:
@@ -73,6 +73,18 @@ The following options can also be specified:
 
 `-l, --logging`
 : Optional, off by default. No logging (other than minimal to the console) will occur unless specified. Once specified, logging will occur to a local log file. Examples include `INFO` or `DEBUG`.
+
+To stop the app, run the command:
+
+```shell
+./stop_screen-animator.sh
+```
+
+To restart the app, run the command (plus any of the inputs required from above):
+
+```shell
+./restart_screen-animator.sh
+```
 
 ### `inputs.toml`
 The `TOML` files provide necessary settings to the app. All settings are required or the input validation will fail, and are explained below.
