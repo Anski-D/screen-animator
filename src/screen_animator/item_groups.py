@@ -146,10 +146,7 @@ class LeftScrollingTextItemGroup(ItemGroup):
         super().__init__(settings_manager, perimeter)
         log.info("Creating %s", self)
 
-        speed = (
-            self._settings["messages"]["scroll_speed"]
-            // self._settings["timings"]["fps"]
-        )
+        speed = self._settings.messages.scroll_speed // self._settings.timings.fps
         self._scrolling_movement = self._movement(speed, Direction.LEFT)
 
     def __repr__(self) -> str:
@@ -171,7 +168,7 @@ class LeftScrollingTextItemGroup(ItemGroup):
         Message is initially placed with middle-left set at the middle-right of the
         perimeter, i.e. off-screen to the right.
         """
-        messages_dict = self._settings["messages"]
+        messages = self._settings.messages
         self._settings_manager.set_font()
         message_text = self._settings_manager.generate_message_text()
         log.debug("Creating %s with text: %s", Item.__name__, message_text)
@@ -179,14 +176,14 @@ class LeftScrollingTextItemGroup(ItemGroup):
         self._set_outline(message_text, start_position)
         message = Item(
             self,
-            self._generate_message(message_text, messages_dict["font"]),
+            self._generate_message(message_text, messages.font),
             self._perimeter,
             self._scrolling_movement,
         )
         message.message_text = message_text
-        message.font = messages_dict["font"]
+        message.font = messages.font
         message.rect.midleft = start_position
-        message.rect.x += messages_dict["outline_width"]
+        message.rect.x += messages.outline_width
 
     def update(self):
         """
@@ -216,26 +213,26 @@ class LeftScrollingTextItemGroup(ItemGroup):
             self.create()
 
     def _generate_message(self, message_text: str, font: pg.Font) -> pg.Surface:
-        messages_dict = self._settings["messages"]
+        messages = self._settings.messages
 
         return font.render(
             message_text,
-            messages_dict["anti-aliasing"],
-            messages_dict["color"],
+            messages.anti_aliasing,
+            messages.color
         )
 
     def _set_outline(self, message_text: str, start_position: tuple[int, int]) -> None:
-        messages_dict = self._settings["messages"]
-        log.debug("Setting text outline with width %s", messages_dict["outline_width"])
-        outline_width = messages_dict["outline_width"]
+        messages = self._settings.messages
+        log.debug("Setting text outline with width %s", messages.outline_width)
+        outline_width = messages.outline_width
         if outline_width > 0:
-            outline_text = messages_dict["font"].render(
+            outline_text = messages.font.render(
                 message_text,
-                messages_dict["anti-aliasing"],
-                messages_dict["outline_color"],
+                messages.anti_aliasing,
+                messages.outline_color,
             )
             angles = np.linspace(
-                0, 360, messages_dict["outline_copies"], endpoint=False
+                0, 360, messages.outline_copies, endpoint=False
             )
             x_shift = outline_width * np.cos(np.radians(angles - 90)) + outline_width
             y_shift = outline_width * np.sin(np.radians(angles - 90))
@@ -249,18 +246,18 @@ class LeftScrollingTextItemGroup(ItemGroup):
                 outline.rect.y += xy_shift[1]
 
     def _calculate_start_position(self, message_text: str) -> tuple[int, int]:
-        messages_dict = self._settings["messages"]
-        if not messages_dict["start_middle"]:
-            dummy_message = self._generate_message(message_text, messages_dict["font"])
+        messages = self._settings.messages
+        if not messages.start_middle:
+            dummy_message = self._generate_message(message_text, messages.font)
             height = dummy_message.get_rect().height
 
             return (
                 self._perimeter.right,
                 random.randint(
-                    height // 2 + messages_dict["outline_width"],
+                    height // 2 + messages.outline_width,
                     self._perimeter.bottom
                     - height // 2
-                    - messages_dict["outline_width"],
+                    - messages.outline_width,
                 ),
             )
 
