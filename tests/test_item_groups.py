@@ -34,6 +34,12 @@ def left_scrolling_text_item_group(settings_manager: SettingsManager, dummy_peri
     return LeftScrollingTextItemGroup(settings_manager, dummy_perimeter)
 
 
+@pytest.fixture
+def random_images_item_group(settings_manager: SettingsManager, dummy_perimeter: pg.Rect) -> RandomImagesItemGroup:
+    """Provide example `RandomImagesGroup`."""
+    return RandomImagesItemGroup(settings_manager, dummy_perimeter)
+
+
 class TestLeftScrollingTextItemGroup:
     @pytest.mark.parametrize("num_of_items", [1, 2, 3, 5, 8])
     def test_create_no_outline(
@@ -189,34 +195,27 @@ class TestLeftScrollingTextItemGroup:
 
 
 class TestRandomImagesItemGroup:
-    @pytest.fixture
-    def example_random_images_item_group(
-        self, settings_manager: SettingsManager, dummy_perimeter: pg.Rect
-    ) -> RandomImagesItemGroup:
-        """Provide example `RandomImagesGroup`."""
-        return RandomImagesItemGroup(settings_manager, dummy_perimeter)
-
     def test_create(
         self,
-        example_random_images_item_group: RandomImagesItemGroup,
+        random_images_item_group: RandomImagesItemGroup,
         dummy_settings_dict_with_tuples: dict,
     ) -> None:
         """Create correct number of images."""
-        item_group = example_random_images_item_group
+        item_group = random_images_item_group
         item_group.create()
-        image_settings = dummy_settings_dict_with_tuples["images"]
+        image_dict = dummy_settings_dict_with_tuples["images"]
 
         assert (
             len(item_group.sprites())
-            == len(image_settings["sources"]) * image_settings["number"]
+            == len(image_dict["sources"]) * image_dict["number"]
         )
 
     @pytest.mark.parametrize("repeats", [1, 2, 3, 5, 8])
     def test_update(
-        self, repeats: int, example_random_images_item_group: RandomImagesItemGroup
+        self, repeats: int, random_images_item_group: RandomImagesItemGroup
     ) -> None:
         """Images are confined to perimeter when positions update."""
-        item_group = example_random_images_item_group
+        item_group = random_images_item_group
         item_group.create()
         for _ in range(repeats):
             item_group.update()

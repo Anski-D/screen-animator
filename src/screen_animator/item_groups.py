@@ -293,16 +293,16 @@ class RandomImagesItemGroup(TimeableItemGroup):
         log.info("Creating %s", self)
 
         self._random_movement = self._movement()
-        self._time_diff = self._settings["timings"]["image_change_time"]
+        self._time_diff = self._settings.timings.image_change_time
 
     def __repr__(self) -> str:
         return f"{type(self).__name__}({self._settings_manager}, {self._perimeter})"
 
     def create(self) -> None:
         """Create all the image items, set to move randomly within the perimeter."""
-        image_settings = self._settings["images"]
-        for _ in range(image_settings["number"]):
-            for image in image_settings["images"]:
+        images = self._settings.images
+        for _ in range(images.number):
+            for image in images.images:
                 log.debug("Creating `pygame` image: %s", image)
                 Item(self, image, self._perimeter, self._random_movement)
 
@@ -320,7 +320,7 @@ class RandomImagesItemGroup(TimeableItemGroup):
         for image_idx, image in enumerate(self.sprites(), 1):
             self.remove(image)
             image.update()
-            reattempts_allowed = self._settings["images"]["reposition_attempts"]
+            reattempts_allowed = self._settings.images.reposition_attempts
             while abs(reattempts_allowed) > 0 and pg.sprite.spritecollideany(
                 image, group
             ):
