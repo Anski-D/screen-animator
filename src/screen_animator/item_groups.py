@@ -215,11 +215,7 @@ class LeftScrollingTextItemGroup(ItemGroup):
     def _generate_message(self, message_text: str, font: pg.Font) -> pg.Surface:
         messages = self._settings.messages
 
-        return font.render(
-            message_text,
-            messages.anti_aliasing,
-            messages.color
-        )
+        return font.render(message_text, messages.anti_aliasing, messages.color)
 
     def _set_outline(self, message_text: str, start_position: tuple[int, int]) -> None:
         messages = self._settings.messages
@@ -231,9 +227,7 @@ class LeftScrollingTextItemGroup(ItemGroup):
                 messages.anti_aliasing,
                 messages.outline_color,
             )
-            angles = np.linspace(
-                0, 360, messages.outline_copies, endpoint=False
-            )
+            angles = np.linspace(0, 360, messages.outline_copies, endpoint=False)
             x_shift = outline_width * np.cos(np.radians(angles - 90)) + outline_width
             y_shift = outline_width * np.sin(np.radians(angles - 90))
             xy_shifts = np.transpose(np.vstack((x_shift, y_shift)))
@@ -255,9 +249,7 @@ class LeftScrollingTextItemGroup(ItemGroup):
                 self._perimeter.right,
                 random.randint(
                     height // 2 + messages.outline_width,
-                    self._perimeter.bottom
-                    - height // 2
-                    - messages.outline_width,
+                    self._perimeter.bottom - height // 2 - messages.outline_width,
                 ),
             )
 

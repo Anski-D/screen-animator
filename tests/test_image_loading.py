@@ -1,4 +1,4 @@
-from typing import Callable
+from collections.abc import Callable
 from pathlib import Path
 
 import pytest
@@ -37,7 +37,8 @@ class TestImageLoader:
         ],
     )
     def test_load_image_file_type(
-        self, mock_image_load: Callable[[], str], input_file: str, output: str) -> None:
+        self, mock_image_load: Callable[[], str], input_file: str, output: str
+    ) -> None:
         """Correct loader function is used for loading images."""
         ImageLoader.register_loader(".svg", SvgImageTypeLoader)
         image_loader = ImageLoader()

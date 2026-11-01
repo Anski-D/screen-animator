@@ -14,20 +14,20 @@ from screen_animator.settings import SettingsManager
 
 
 @pytest.fixture
-def settings_manager(settings_manager: SettingsManager, dummy_content: pg.Surface) -> SettingsManager:
+def settings_manager(
+    settings_manager: SettingsManager, dummy_content: pg.Surface
+) -> SettingsManager:
     """Provide example `SettingsManager`."""
     images = settings_manager.settings.images
-    images.images = [
-        dummy_content
-        for _
-        in images.sources
-    ]
+    images.images = [dummy_content for _ in images.sources]
 
     return settings_manager
 
 
 @pytest.fixture
-def left_scrolling_text_item_group(settings_manager: SettingsManager, dummy_perimeter: pg.Rect) -> LeftScrollingTextItemGroup:
+def left_scrolling_text_item_group(
+    settings_manager: SettingsManager, dummy_perimeter: pg.Rect
+) -> LeftScrollingTextItemGroup:
     """Provide example `LeftScrollingTextGroup`."""
     settings_manager.set_font()
 
@@ -35,7 +35,9 @@ def left_scrolling_text_item_group(settings_manager: SettingsManager, dummy_peri
 
 
 @pytest.fixture
-def random_images_item_group(settings_manager: SettingsManager, dummy_perimeter: pg.Rect) -> RandomImagesItemGroup:
+def random_images_item_group(
+    settings_manager: SettingsManager, dummy_perimeter: pg.Rect
+) -> RandomImagesItemGroup:
     """Provide example `RandomImagesGroup`."""
     return RandomImagesItemGroup(settings_manager, dummy_perimeter)
 
@@ -45,9 +47,7 @@ def color_change_item_group(
     settings_manager: SettingsManager, dummy_perimeter: pg.Rect
 ) -> TimedItemGroup:
     """Provide example `ColorChangeGroup`."""
-    return TimedItemGroup(
-        settings_manager, dummy_perimeter, ColorChangeItemGroup
-    )
+    return TimedItemGroup(settings_manager, dummy_perimeter, ColorChangeItemGroup)
 
 
 class TestLeftScrollingTextItemGroup:
@@ -79,10 +79,8 @@ class TestLeftScrollingTextItemGroup:
         for _ in range(num_of_items):
             item_group.create()
 
-        assert (
-                len(item_group.sprites())
-                == num_of_items * (1 +
-                + dummy_settings_dict_with_tuples["messages"]["outline_copies"])
+        assert len(item_group.sprites()) == num_of_items * (
+            1 + +dummy_settings_dict_with_tuples["messages"]["outline_copies"]
         )
 
     def test_create_position_x(
@@ -96,9 +94,9 @@ class TestLeftScrollingTextItemGroup:
         item_group.create()
 
         assert (
-                item_group.sprites()[-1].rect.left
-                == dummy_perimeter.right
-                + dummy_settings_dict_with_tuples["messages"]["outline_width"]
+            item_group.sprites()[-1].rect.left
+            == dummy_perimeter.right
+            + dummy_settings_dict_with_tuples["messages"]["outline_width"]
         )
 
     def test_create_position_y_start_middle(
@@ -132,11 +130,9 @@ class TestLeftScrollingTextItemGroup:
             items.append(item)
 
         assert all(
-            [
-                item.rect.top >= dummy_perimeter.top
-                and item.rect.bottom <= dummy_perimeter.bottom
-                for item in items
-            ]
+            item.rect.top >= dummy_perimeter.top
+            and item.rect.bottom <= dummy_perimeter.bottom
+            for item in items
         )
 
     def test_update_create(
@@ -161,6 +157,7 @@ class TestLeftScrollingTextItemGroup:
         left_scrolling_text_item_group: LeftScrollingTextItemGroup,
     ) -> None:
         """`Item` is deleted once fully off screen."""
+
         def mock_create(*args, **kwargs) -> None:
             return None
 
@@ -199,8 +196,8 @@ class TestLeftScrollingTextItemGroup:
         item_group._set_outline("Test", dummy_perimeter.midright)
 
         assert (
-                len(item_group.sprites())
-                == dummy_settings_dict_with_tuples["messages"]["outline_copies"]
+            len(item_group.sprites())
+            == dummy_settings_dict_with_tuples["messages"]["outline_copies"]
         )
 
 
@@ -231,7 +228,7 @@ class TestRandomImagesItemGroup:
             item_group.update()
 
         assert all(
-            [item_group._perimeter.contains(image) for image in item_group.sprites()]
+            item_group._perimeter.contains(image) for image in item_group.sprites()
         )
 
 

@@ -1,8 +1,7 @@
-from typing import Callable
+from collections.abc import Callable
 
 import pygame as pg
 import pytest
-from _pytest.monkeypatch import MonkeyPatch
 from pytest import MonkeyPatch
 
 from screen_animator import settings
@@ -103,7 +102,9 @@ def dummy_content() -> pg.Surface:
 
 
 @pytest.fixture
-def mock_settings(monkeypatch: MonkeyPatch, dummy_settings_dict_with_tuples: dict) -> None:
+def mock_settings(
+    monkeypatch: MonkeyPatch, dummy_settings_dict_with_tuples: dict
+) -> None:
     def mock_import_settings(*args, **kwargs) -> Settings:
         return Settings.model_validate(dummy_settings_dict_with_tuples)
 
@@ -111,10 +112,14 @@ def mock_settings(monkeypatch: MonkeyPatch, dummy_settings_dict_with_tuples: dic
 
 
 @pytest.fixture
-def settings_manager(monkeypatch: MonkeyPatch, mock_settings: Callable[[], Settings]) -> SettingsManager:
+def settings_manager(
+    monkeypatch: MonkeyPatch, mock_settings: Callable[[], Settings]
+) -> SettingsManager:
     def mock_set_initial_settings(*args, **kwargs) -> None:
         return None
 
-    monkeypatch.setattr(SettingsManager, "_set_initial_settings", mock_set_initial_settings)
+    monkeypatch.setattr(
+        SettingsManager, "_set_initial_settings", mock_set_initial_settings
+    )
 
     return SettingsManager([""])

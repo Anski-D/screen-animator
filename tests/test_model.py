@@ -10,26 +10,25 @@ from screen_animator.speed_changer import SpeedChanger
 
 @pytest.fixture
 def model(
-        monkeypatch: MonkeyPatch,
-        settings_manager: SettingsManager,
-        dummy_perimeter: pg.Rect,
+    monkeypatch: MonkeyPatch,
+    settings_manager: SettingsManager,
+    dummy_perimeter: pg.Rect,
 ) -> Model:
     """Create example Model"""
+
     def mock_item_group_init(*args, **kwargs) -> None:
         """Patch ItemGroup so that its init dunder just returns None."""
-        return None
+        return
 
     def mock_speed_changer_init(*args, **kwargs) -> None:
         """Patch SpeedChanger so that its init dunder just returns None."""
-        return None
+        return
 
     monkeypatch.setattr(ItemGroup, "__init__", mock_item_group_init)
     ItemGroup.__abstractmethods__ = set()
     monkeypatch.setattr(SpeedChanger, "__init__", mock_speed_changer_init)
 
-    return Model(
-        settings_manager, [ItemGroup for _ in range(3)], dummy_perimeter
-    )
+    return Model(settings_manager, [ItemGroup for _ in range(3)], dummy_perimeter)
 
 
 class TestModel:

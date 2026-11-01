@@ -1,7 +1,7 @@
 import logging
 from io import BytesIO
 from pathlib import Path
-from typing import Protocol
+from typing import ClassVar, Protocol
 
 import cairosvg
 import pygame as pg
@@ -129,7 +129,7 @@ class ImageLoader:
         Return a loaded image as a `pygame` Surface.
     """
 
-    _loaders: dict[str, type[ImageTypeLoader]] = {}
+    _loaders: ClassVar[dict[str, type[ImageTypeLoader]]] = {}
 
     def __repr__(self) -> str:
         return f"{type(self).__name__}()"

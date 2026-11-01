@@ -36,24 +36,24 @@ repos:
     # Ruff version.
     rev: v0.16.6
     hooks:
-#    # Run the linter.
-#    -   id: ruff-check
-#        types_or: [ python, pyproject ]
-#        args: [ --fix ]
+    # Run the linter.
+    -   id: ruff-check
+        types_or: [ python, pyproject ]
+        args: [ --fix ]
     # Run the formatter.
     -   id: ruff-format
 -   repo: local
     hooks:
-    -   id: tox check not slow
-        name: tox check pre-commit
-        entry: tox -p -- -m "not slow"
+    -   id: tox pytest not slow
+        name: tox pytest pre-commit
+        entry: tox -- -m "not slow"
         language: system
         pass_filenames: false
         stages:
             - pre-commit
-    -   id: tox check
-        name: tox check pre-push
-        entry: tox -p
+    -   id: tox pytest slow
+        name: tox pytest pre-push
+        entry: tox
         language: system
         pass_filenames: false
         stages:

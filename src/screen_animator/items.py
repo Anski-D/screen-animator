@@ -1,7 +1,7 @@
 import logging
 import random
 from enum import Enum, auto
-from typing import Protocol, runtime_checkable
+from typing import ClassVar, Protocol, runtime_checkable
 
 import pygame as pg
 
@@ -119,7 +119,7 @@ class ScrollingMovement(Movement):
         Move in the direction specified at the set speed.
     """
 
-    _directions = {
+    _directions: ClassVar = {
         Direction.UP: ("y", -1),
         Direction.RIGHT: ("x", 1),
         Direction.DOWN: ("y", 1),

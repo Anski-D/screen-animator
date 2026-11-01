@@ -1,9 +1,9 @@
 import logging
 import random
+import tomllib
 from collections.abc import Iterable, MutableMapping
 from pathlib import Path
 from typing import Any
-import tomllib
 
 import pygame as pg
 from mergedeep import merge
@@ -71,8 +71,7 @@ def convert_lists_to_tuples(input_item: Any) -> Any:
             return [convert_lists_to_tuples(item) for item in input_item]
         case MutableMapping():
             return {
-                key: convert_lists_to_tuples(value)
-                for key, value in input_item.items()
+                key: convert_lists_to_tuples(value) for key, value in input_item.items()
             }
         case _:
             return input_item
@@ -141,7 +140,9 @@ class SettingsManager:
             self._settings.messages.color = random.choice(self._settings.colors)
         log.debug("Set text color to: %s", self._settings.messages.color)
 
-        self._settings.messages.outline_color = random.choice(self._settings.messages.outline_colors)
+        self._settings.messages.outline_color = random.choice(
+            self._settings.messages.outline_colors
+        )
         log.debug("Set outline color as: %s", self._settings.messages.outline_color)
 
     def generate_message_text(self) -> str:
@@ -158,7 +159,9 @@ class SettingsManager:
     def set_font(self) -> None:
         """Create the `pygame` font instance for rendering messages."""
         log.debug("Setting `pygame` font for text rendering")
-        size = random.randint(min(self._settings.messages.sizes), max(self._settings.messages.sizes))
+        size = random.randint(
+            min(self._settings.messages.sizes), max(self._settings.messages.sizes)
+        )
         self._settings.messages.font = pg.font.Font(
             pg.font.match_font(
                 self._settings.messages.typeface,

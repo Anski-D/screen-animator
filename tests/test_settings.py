@@ -2,15 +2,21 @@ import pygame as pg
 import pytest
 from pytest import MonkeyPatch
 
-from conftest import settings_manager
-from screen_animator.settings import SettingsManager, convert_lists_to_tuples
-from screen_animator.settings import ImageLoader
+from screen_animator.settings import (
+    ImageLoader,
+    SettingsManager,
+    convert_lists_to_tuples,
+)
 
 
-def test_convert_lists_to_tuples(dummy_settings_dict: dict, dummy_settings_dict_with_tuples: dict) -> None:
+def test_convert_lists_to_tuples(
+    dummy_settings_dict: dict, dummy_settings_dict_with_tuples: dict
+) -> None:
     """Lists with int values are converted to tuples."""
 
-    assert convert_lists_to_tuples(dummy_settings_dict) == dummy_settings_dict_with_tuples
+    assert (
+        convert_lists_to_tuples(dummy_settings_dict) == dummy_settings_dict_with_tuples
+    )
 
 
 @pytest.fixture
@@ -23,9 +29,7 @@ def mock_image_load(monkeypatch: MonkeyPatch) -> None:
 
 class TestSettingsManager:
     @pytest.mark.parametrize("group", ["bg", "messages"])
-    def test_set_colors(
-        self, group: str, settings_manager: SettingsManager
-    ) -> None:
+    def test_set_colors(self, group: str, settings_manager: SettingsManager) -> None:
         """Colors are set to a color option provided in settings."""
         settings_manager.set_colors()
         settings = settings_manager.settings
@@ -71,9 +75,7 @@ class TestSettingsManager:
             for message in messages_dict["messages"]
         ]
 
-    def test_generate_text_return_type(
-        self, settings_manager: SettingsManager
-    ) -> None:
+    def test_generate_text_return_type(self, settings_manager: SettingsManager) -> None:
         """Message strings generated are of correct type."""
         assert isinstance(settings_manager.generate_message_text(), str)
 
