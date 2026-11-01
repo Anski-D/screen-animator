@@ -5,7 +5,7 @@ from functools import partial
 import pygame as pg
 
 from screen_animator.controller import Controller, EventManager, QuitAction
-from screen_animator.image_loading import ImageLoader, SvgTypeImageLoader
+from screen_animator.image_loading import ImageLoader, SvgImageTypeLoader
 from screen_animator.item_groups import (
     ColorChangeItemGroup,
     FpsCounterItemGroup,
@@ -45,7 +45,7 @@ def main() -> None:
     args = _parse_args()
     setup_logging(args.logging)
 
-    ImageLoader.register_loader(".svg", SvgTypeImageLoader)
+    ImageLoader.register_loader(".svg", SvgImageTypeLoader)
 
     item_group_types = (
         ITEM_GROUP_TYPES + [FpsCounterItemGroup] if args.fps else ITEM_GROUP_TYPES

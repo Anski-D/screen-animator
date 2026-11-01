@@ -23,13 +23,13 @@ class TestModel:
     def example_model(
         self,
         example_settings_manager: SettingsManager,
-        example_perimeter: pg.Rect,
+        dummy_perimeter: pg.Rect,
         patch_item_group_init,
         patch_speed_changer_init,
     ) -> Model:
         """Create example Model"""
         return Model(
-            example_settings_manager, [ItemGroup for _ in range(3)], example_perimeter
+            example_settings_manager, [ItemGroup for _ in range(3)], dummy_perimeter
         )
 
     def test_init_item_group(self, example_model: Model) -> None:

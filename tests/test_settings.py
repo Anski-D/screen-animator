@@ -1,10 +1,9 @@
-from collections.abc import Callable
-
 import pygame as pg
 import pytest
 from pytest import MonkeyPatch
 
-from screen_animator.settings import SettingsManager, Settings, convert_lists_to_tuples
+from conftest import settings_manager
+from screen_animator.settings import SettingsManager, convert_lists_to_tuples
 from screen_animator.settings import ImageLoader
 
 
@@ -12,16 +11,6 @@ def test_convert_lists_to_tuples(dummy_settings_dict: dict, dummy_settings_dict_
     """Lists with int values are converted to tuples."""
 
     assert convert_lists_to_tuples(dummy_settings_dict) == dummy_settings_dict_with_tuples
-
-
-@pytest.fixture
-def settings_manager(monkeypatch: MonkeyPatch, mock_settings: Callable[[], Settings]) -> SettingsManager:
-    def mock_set_initial_settings(*args, **kwargs) -> None:
-        return None
-
-    monkeypatch.setattr(SettingsManager, "_set_initial_settings", mock_set_initial_settings)
-
-    return SettingsManager([""])
 
 
 @pytest.fixture
