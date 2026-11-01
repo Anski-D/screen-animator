@@ -1,11 +1,11 @@
 import logging
-from collections.abc import Iterable, Mapping
-from typing import Any
+from collections.abc import Iterable
 
 import pygame as pg
 
 from screen_animator.listener import Listener
 from screen_animator.model import Model
+from screen_animator.settings import Settings
 
 log = logging.getLogger(__name__)
 
@@ -22,7 +22,7 @@ class Controller:
         Stop running.
     """
 
-    def __init__(self, settings: Mapping[str, Any], model: Model) -> None:
+    def __init__(self, settings: Settings, model: Model) -> None:
         """
         Set initial parameters.
 
@@ -53,12 +53,12 @@ class Controller:
             type(self).__name__,
             " now running, entering main loop".upper(),
         )
-        timings_dict = self._settings["timings"]
+        timings = self._settings.timings
         while self._initialized:
-            self._clock.tick(timings_dict["fps"])
+            self._clock.tick(timings.fps)
             self._model.update()
             event_manager.manage_events()
-            timings_dict["fps_actual"] = self._clock.get_fps()
+            timings.fps_actual = int(self._clock.get_fps())
 
         log.info("Run method complete, %s stopping", type(self).__name__)
 
