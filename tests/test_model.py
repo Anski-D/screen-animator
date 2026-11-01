@@ -1,5 +1,6 @@
 import pygame as pg
 import pytest
+from pytest import MonkeyPatch
 
 from screen_animator.item_groups import ItemGroup
 from screen_animator.model import Model
@@ -7,41 +8,37 @@ from screen_animator.settings import SettingsManager
 from screen_animator.speed_changer import SpeedChanger
 
 
-class TestModel:
-    @pytest.fixture
-    def patch_item_group_init(self, monkeypatch) -> None:
-        """Patch ItemGroup so that its init dunder just returns None."""
-        monkeypatch.setattr(ItemGroup, "__init__", lambda *args, **kwargs: None)
-        ItemGroup.__abstractmethods__ = set()
-
-    @pytest.fixture
-    def patch_speed_changer_init(self, monkeypatch) -> None:
-        """Patch SpeedChanger so that its init dunder just returns None."""
-        monkeypatch.setattr(SpeedChanger, "__init__", lambda *args, **kwargs: None)
-
-    @pytest.fixture
-    def example_model(
-        self,
-        example_settings_manager: SettingsManager,
+@pytest.fixture
+def model(
+        monkeypatch: MonkeyPatch,
+        settings_manager: SettingsManager,
         dummy_perimeter: pg.Rect,
-        patch_item_group_init,
-        patch_speed_changer_init,
-    ) -> Model:
-        """Create example Model"""
-        return Model(
-            example_settings_manager, [ItemGroup for _ in range(3)], dummy_perimeter
-        )
+) -> Model:
+    """Create example Model"""
+    def mock_item_group_init(*args, **kwargs) -> None:
+        """Patch ItemGroup so that its init dunder just returns None."""
+        return None
 
-    def test_init_item_group(self, example_model: Model) -> None:
+    def mock_speed_changer_init(*args, **kwargs) -> None:
+        """Patch SpeedChanger so that its init dunder just returns None."""
+        return None
+
+    monkeypatch.setattr(ItemGroup, "__init__", mock_item_group_init)
+    ItemGroup.__abstractmethods__ = set()
+    monkeypatch.setattr(SpeedChanger, "__init__", mock_speed_changer_init)
+
+    return Model(
+        settings_manager, [ItemGroup for _ in range(3)], dummy_perimeter
+    )
+
+
+class TestModel:
+    def test_init_item_group(self, model: Model) -> None:
         """init dunder creates ItemGroup instances."""
-        model = example_model
-
         assert all(
             isinstance(item_group, ItemGroup) for item_group in model.item_groups
         )
 
-    def test_init_event_type_int(self, example_model: Model) -> None:
+    def test_init_event_type_int(self, model: Model) -> None:
         """Update event type is `int`."""
-        model = example_model
-
         assert isinstance(model.update_event_type, int)
