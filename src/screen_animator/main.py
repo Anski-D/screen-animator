@@ -126,7 +126,7 @@ def run_app() -> None:
 
 
 def _set_display_size(display_size: tuple[float, float] | None = None) -> pg.Surface:
-    pg.display.set_caption("screen_animator")
+    pg.display.set_caption("screen-animator")
 
     if display_size is None:
         return pg.display.set_mode((0, 0), pg.FULLSCREEN)
