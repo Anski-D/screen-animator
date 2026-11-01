@@ -1,9 +1,8 @@
 import logging
 import random
 import tomllib
-from collections.abc import Iterable, MutableMapping
+from collections.abc import Iterable
 from pathlib import Path
-from typing import Any
 
 import pygame as pg
 from mergedeep import merge
@@ -20,7 +19,7 @@ class Messages(BaseModel):
     messages: list[str]
     separator: str = "    "
     typeface: str = "freeserif"
-    sizes: list[int]
+    sizes: tuple[int, int]
     bold: bool = True
     italic: bool = False
     anti_aliasing: bool = False
@@ -62,21 +61,6 @@ class Settings(BaseModel):
     bg: Background = Background()
 
 
-def convert_lists_to_tuples(input_item: Any) -> Any:
-    """Converts lists with ints to tuples"""
-    match input_item:
-        case [int(), int(), int()] | [str(), int()]:
-            return tuple(input_item)
-        case list():
-            return [convert_lists_to_tuples(item) for item in input_item]
-        case MutableMapping():
-            return {
-                key: convert_lists_to_tuples(value) for key, value in input_item.items()
-            }
-        case _:
-            return input_item
-
-
 def import_settings(settings_paths: Iterable[Path | str]) -> Settings:
     """Imports settings from defined files and validates input"""
     settings_dicts = []
@@ -87,7 +71,6 @@ def import_settings(settings_paths: Iterable[Path | str]) -> Settings:
 
     settings = merge(*settings_dicts)
     log.info("Collated settings:\n\t%s", settings)
-    settings = convert_lists_to_tuples(settings)
 
     return Settings.model_validate(settings)
 

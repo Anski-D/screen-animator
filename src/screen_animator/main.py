@@ -1,12 +1,10 @@
 import argparse
 import logging
-import sys
 from collections.abc import Callable
 from functools import partial
 
 import pygame as pg
 
-from screen_animator.log_setup import setup_logging
 from screen_animator.controller import Controller, EventManager, QuitAction
 from screen_animator.image_loading import ImageLoader, SvgImageTypeLoader
 from screen_animator.item_groups import (
@@ -17,6 +15,7 @@ from screen_animator.item_groups import (
     RandomImagesItemGroup,
     TimedItemGroup,
 )
+from screen_animator.log_setup import setup_logging
 from screen_animator.model import Model
 from screen_animator.settings import SettingsManager
 from screen_animator.speed_changer import (

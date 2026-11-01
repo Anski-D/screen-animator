@@ -2,21 +2,7 @@ import pygame as pg
 import pytest
 from pytest import MonkeyPatch
 
-from screen_animator.settings import (
-    ImageLoader,
-    SettingsManager,
-    convert_lists_to_tuples,
-)
-
-
-def test_convert_lists_to_tuples(
-    dummy_settings_dict: dict, dummy_settings_dict_with_tuples: dict
-) -> None:
-    """Lists with int values are converted to tuples."""
-
-    assert (
-        convert_lists_to_tuples(dummy_settings_dict) == dummy_settings_dict_with_tuples
-    )
+from screen_animator.settings import ImageLoader, SettingsManager
 
 
 @pytest.fixture
@@ -55,7 +41,7 @@ class TestSettingsManager:
     ) -> None:
         """Font size is between limits specified."""
         messages = settings_manager.settings.messages
-        messages.sizes = list(sizes)
+        messages.sizes = sizes
         settings_manager.set_font()
 
         assert min(sizes) <= messages.font.point_size <= max(sizes)
