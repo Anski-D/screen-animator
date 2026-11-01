@@ -374,7 +374,7 @@ class ColorChangeItemGroup(TimeableItemGroup):
         super().__init__(settings_manager, perimeter)
         log.info("Creating %s", self)
 
-        self._time_diff = self._settings["timings"]["color_change_time"]
+        self._time_diff = self._settings.timings.color_change_time
 
     def __repr__(self) -> str:
         return f"{type(self).__name__}({self._settings_manager}, {self._perimeter})"

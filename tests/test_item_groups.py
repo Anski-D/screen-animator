@@ -40,6 +40,16 @@ def random_images_item_group(settings_manager: SettingsManager, dummy_perimeter:
     return RandomImagesItemGroup(settings_manager, dummy_perimeter)
 
 
+@pytest.fixture
+def color_change_item_group(
+    settings_manager: SettingsManager, dummy_perimeter: pg.Rect
+) -> TimedItemGroup:
+    """Provide example `ColorChangeGroup`."""
+    return TimedItemGroup(
+        settings_manager, dummy_perimeter, ColorChangeItemGroup
+    )
+
+
 class TestLeftScrollingTextItemGroup:
     @pytest.mark.parametrize("num_of_items", [1, 2, 3, 5, 8])
     def test_create_no_outline(
@@ -226,18 +236,9 @@ class TestRandomImagesItemGroup:
 
 
 class TestColorChangeItemGroup:
-    @pytest.fixture
-    def example_color_change_item_group(
-        self, settings_manager: SettingsManager, dummy_perimeter: pg.Rect
-    ) -> TimedItemGroup:
-        """Provide example `ColorChangeGroup`."""
-        return TimedItemGroup(
-            settings_manager, dummy_perimeter, ColorChangeItemGroup
-        )
-
-    def test_create(self, example_color_change_item_group: TimedItemGroup) -> None:
+    def test_create(self, color_change_item_group: TimedItemGroup) -> None:
         """Time is saved."""
-        item_group = example_color_change_item_group
+        item_group = color_change_item_group
         item_group.create()
 
         assert isinstance(item_group._time, int)
@@ -250,10 +251,10 @@ class TestColorChangeItemGroup:
         self,
         sleep: int,
         output: bool,
-        example_color_change_item_group: TimedItemGroup,
+        color_change_item_group: TimedItemGroup,
     ) -> None:
         """Time value updated after sufficient time elapsed."""
-        item_group = example_color_change_item_group
+        item_group = color_change_item_group
         item_group._wrapped_group._time_diff = 4
         item_group.create()
         time1 = item_group._time
