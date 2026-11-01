@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 LOG_DIR=logs
-LOG_FILE=.screen-animator.log
+LOG_FILE=screen-animator.log
 LOG=$LOG_DIR/$LOG_FILE
 PID_FILE=.pid
 

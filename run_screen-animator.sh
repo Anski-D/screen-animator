@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # === USER INPUTS ===
 LOG_DIR=logs
-LOG_FILE=.screen-animator.log
+LOG_FILE=screen-animator.log
 SCRIPT_BIN=.venv/bin/screen-animator
 # ===================
 

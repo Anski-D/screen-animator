@@ -2,7 +2,7 @@ import logging
 from pathlib import Path
 
 LOG_DIR = "logs"
-LOG_FILE = ".screen-animator.log"
+LOG_FILE = "screen-animator.log"
 
 
 def setup_logging(logging_level: str = "") -> None:
