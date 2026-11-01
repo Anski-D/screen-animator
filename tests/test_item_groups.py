@@ -3,7 +3,6 @@ import time
 
 import pygame as pg
 import pytest
-from pytest import MonkeyPatch
 
 from screen_animator.item_groups import (
     ColorChangeItemGroup,
@@ -12,23 +11,6 @@ from screen_animator.item_groups import (
     TimedItemGroup,
 )
 from screen_animator.settings import SettingsManager
-
-
-# @pytest.fixture
-# def settings_manager(
-#     monkeypatch,
-#     example_settings_manager: SettingsManager,
-#     dummy_settings_dict_with_tuples: dict,
-#     dummy_content: pg.Surface,
-# ) -> SettingsManager:
-#     """Provide example `SettingsManager`."""
-#     settings_manager = example_settings_manager
-#     settings_manager.settings["images"]["images"] = [
-#         dummy_content
-#         for _ in range(len(dummy_settings_dict_with_tuples["images"]["sources"]))
-#     ]
-#
-#     return settings_manager
 
 
 @pytest.fixture
@@ -47,17 +29,12 @@ def settings_manager(settings_manager: SettingsManager, dummy_content: pg.Surfac
 @pytest.fixture
 def left_scrolling_text_item_group(settings_manager: SettingsManager, dummy_perimeter: pg.Rect) -> LeftScrollingTextItemGroup:
     """Provide example `LeftScrollingTextGroup`."""
+    settings_manager.set_font()
+
     return LeftScrollingTextItemGroup(settings_manager, dummy_perimeter)
 
 
 class TestLeftScrollingTextItemGroup:
-    # @pytest.fixture
-    # def left_scrolling_text_item_group(
-    #     self, settings_manager: SettingsManager, dummy_perimeter: pg.Rect
-    # ) -> LeftScrollingTextItemGroup:
-    #     """Provide example `LeftScrollingTextGroup`."""
-    #     return LeftScrollingTextItemGroup(settings_manager, dummy_perimeter)
-
     @pytest.mark.parametrize("num_of_items", [1, 2, 3, 5, 8])
     def test_create_no_outline(
         self,
@@ -151,7 +128,7 @@ class TestLeftScrollingTextItemGroup:
     ) -> None:
         """New `Item` is created once previous has fully emerged."""
         item_group = left_scrolling_text_item_group
-        item_group._settings["messages"]["outline_width"] = 0
+        item_group._settings.messages.outline_width = 0
         item_group.create()
         item = item_group.sprites()[0]
         width = item.rect.width
@@ -168,13 +145,16 @@ class TestLeftScrollingTextItemGroup:
         left_scrolling_text_item_group: LeftScrollingTextItemGroup,
     ) -> None:
         """`Item` is deleted once fully off screen."""
+        def mock_create(*args, **kwargs) -> None:
+            return None
+
         item_group = left_scrolling_text_item_group
         item_group.create()
         item = item_group.sprites()[0]
         width = item.rect.width + item_group._perimeter.width
         speed = 100
         item._movement.speed = speed
-        monkeypatch.setattr(LeftScrollingTextItemGroup, "create", lambda x: None)
+        monkeypatch.setattr(LeftScrollingTextItemGroup, "create", mock_create)
         for _ in range(math.ceil(width / speed)):
             item_group.update()
 
@@ -187,7 +167,7 @@ class TestLeftScrollingTextItemGroup:
         assert isinstance(
             left_scrolling_text_item_group._generate_message(
                 "Test",
-                left_scrolling_text_item_group._settings["messages"]["font"],
+                left_scrolling_text_item_group._settings.messages.font,
             ),
             pg.Surface,
         )
