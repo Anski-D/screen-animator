@@ -1,3 +1,4 @@
+import logging
 from collections.abc import Callable
 from functools import partial
 
@@ -38,6 +39,8 @@ EVENT_TYPES: list[tuple[int, int] | int] = [
     (pg.KEYDOWN, pg.K_RIGHT),
 ]
 
+log = logging.getLogger(__name__)
+
 
 def run_app() -> None:
     """Main app function to run."""
@@ -72,7 +75,7 @@ def run_app() -> None:
     except KeyboardInterrupt:
         pass
     finally:
-        print("Closing app")
+        log.info("Closing app")
 
 
 def _set_display_size(display_size: tuple[float, float] | None = None) -> pg.Surface:

@@ -4,7 +4,7 @@ from pathlib import Path
 from screen_animator import args
 
 LOG_DIR = "logs"
-LOG_FILE = f".{__package__}.log"
+LOG_FILE = f".screen-animator.log"
 
 
 def _setup_logging(logging_level: str):

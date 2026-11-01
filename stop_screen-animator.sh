@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+LOG_DIR=logs
+LOG_FILE=.screen-animator.log
+LOG=$LOG_DIR/$LOG_FILE
+PID_FILE=.pid
+
+if [ ! -d $LOG_DIR ]
+then
+  mkdir $LOG_DIR
+fi
+
+echo "=======================" | tee -a $LOG
+echo "=== SCREEN-ANIMATOR ===" | tee -a $LOG
+echo "=======================" | tee -a $LOG
+
+if [ -f $PID_FILE ]
+then
+  PID=$(<$PID_FILE)
+else
+  echo "No $PID_FILE file found!" | tee -a $LOG
+  exit 1
+fi
+
+echo "Stopping Python script..." | tee -a $LOG
+if [[ $(kill "$PID") -eq 0 ]]
+then
+  echo "...killed process $PID" | tee -a $LOG
+  rm $PID_FILE
+else
+  echo "ERROR - process not stopped" | tee -a $LOG
+  exit 1
+fi
+
+echo -e "Done\n" | tee -a $LOG
+exit 0
