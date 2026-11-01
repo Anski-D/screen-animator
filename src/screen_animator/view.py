@@ -1,10 +1,9 @@
 import logging
-from collections.abc import Mapping
-from typing import Any
 
 import pygame as pg
 
 from screen_animator.model import Model
+from screen_animator.settings import Settings
 
 from .listener import Listener
 
@@ -34,7 +33,7 @@ class View(Listener):
         self,
         model: Model,
         display: pg.Surface,
-        settings: Mapping[str, Any],
+        settings: Settings,
         rotated: bool = False,
     ) -> None:
         """
@@ -80,4 +79,4 @@ class View(Listener):
         self.update()
 
     def _set_bg(self) -> None:
-        self._display.fill(self._settings["bg"]["color"])
+        self._display.fill(self._settings.bg.color)
