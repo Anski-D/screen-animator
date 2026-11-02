@@ -14,37 +14,37 @@ def mock_image_load(monkeypatch: MonkeyPatch) -> None:
 
 
 class TestSettingsManager:
-    @pytest.mark.parametrize("group", ["bg", "messages"])
-    def test_set_colors(self, group: str, settings_manager: SettingsManager) -> None:
+    @pytest.mark.parametrize("key", ["color", "bg_color"])
+    def test_set_colors(self, key: str, settings_manager: SettingsManager) -> None:
         """Colors are set to a color option provided in settings."""
         settings_manager.set_colors()
         settings = settings_manager.settings
 
-        assert getattr(settings, group).color in settings.colors
+        assert getattr(settings.runtime, key) in settings.colors
 
     def test_set_outline_color(self, settings_manager: SettingsManager) -> None:
         """Outline color set to color option provided in settings."""
         settings_manager.set_colors()
-        messages = settings_manager.settings.messages
+        settings = settings_manager.settings
 
-        assert messages.outline_color in messages.outline_colors
+        assert settings.runtime.outline_color in settings.messages.outline_colors
 
     def test_set_font(self, settings_manager: SettingsManager) -> None:
         """`Font` instance created and added to settings."""
         settings_manager.set_font()
 
-        assert isinstance(settings_manager.settings.messages.font, pg.Font)
+        assert isinstance(settings_manager.settings.runtime.font, pg.Font)
 
     @pytest.mark.parametrize("sizes", [(10, 10), (20, 30), (50, 50), (80, 130)])
     def test_set_font_size(
         self, sizes: tuple[int, int], settings_manager: SettingsManager
     ) -> None:
         """Font size is between limits specified."""
-        messages = settings_manager.settings.messages
-        messages.sizes = sizes
+        settings = settings_manager.settings
+        settings.messages.sizes = sizes
         settings_manager.set_font()
 
-        assert min(sizes) <= messages.font.point_size <= max(sizes)
+        assert min(sizes) <= settings.runtime.font.point_size <= max(sizes)
 
     @pytest.mark.parametrize("repeat", range(5))
     def test_generate_text(
@@ -72,6 +72,6 @@ class TestSettingsManager:
     ) -> None:
         """Images are loaded and stored in settings."""
         settings_manager._load_images()
-        images = settings_manager.settings.images
+        settings = settings_manager.settings
 
-        assert len(images.images) == len(images.sources)
+        assert len(settings.runtime.images) == len(settings.images.sources)

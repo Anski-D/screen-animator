@@ -18,8 +18,8 @@ def settings_manager(
     settings_manager: SettingsManager, dummy_content: pg.Surface
 ) -> SettingsManager:
     """Provide example `SettingsManager`."""
-    images = settings_manager.settings.images
-    images.images = [dummy_content for _ in images.sources]
+    settings = settings_manager.settings
+    settings.runtime.images = [dummy_content for _ in settings.images.sources]
 
     return settings_manager
 
@@ -80,7 +80,7 @@ class TestLeftScrollingTextItemGroup:
             item_group.create()
 
         assert len(item_group.sprites()) == num_of_items * (
-            1 + +dummy_settings_dict_with_tuples["messages"]["outline_copies"]
+            1 + dummy_settings_dict_with_tuples["messages"]["outline_copies"]
         )
 
     def test_create_position_x(
@@ -180,7 +180,7 @@ class TestLeftScrollingTextItemGroup:
         assert isinstance(
             left_scrolling_text_item_group._generate_message(
                 "Test",
-                left_scrolling_text_item_group._settings.messages.font,
+                left_scrolling_text_item_group._settings.runtime.font,
             ),
             pg.Surface,
         )
