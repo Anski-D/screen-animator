@@ -26,6 +26,7 @@ class Messages(BaseModel):
     outline_copies: int = 360
     outline_colors: list[tuple[int, int, int]] = [(0, 0, 0)]
     start_middle: bool = True
+    sequential: bool = False
 
 
 class Images(BaseModel):
@@ -100,6 +101,7 @@ class SettingsManager:
         """
         self._settings_files = settings_files
         self._settings = import_settings(self._settings_files)
+        self._messages = []
         self._set_initial_settings()
 
     def __repr__(self) -> str:
@@ -135,7 +137,17 @@ class SettingsManager:
         str
             The selected message.
         """
-        return f"{random.choice(self._settings.messages.messages)}{self._settings.messages.separator}"
+        if not self._messages:
+            self._messages = list(self._settings.messages.messages)
+            random.shuffle(self._messages)
+
+        message = (
+            self._messages.pop()
+            if self._settings.messages.sequential
+            else random.choice(self._messages)
+        )
+
+        return f"{message}{self._settings.messages.separator}"
 
     def set_font(self) -> None:
         """Create the `pygame` font instance for rendering messages."""
@@ -156,7 +168,6 @@ class SettingsManager:
         self.set_colors()
         self.set_font()
         self._load_images()
-        self._settings.runtime.fps_actual = self._settings.timings.fps
 
     def _load_images(self):
         if len(self._settings.images.sources) >= 1:

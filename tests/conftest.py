@@ -40,6 +40,7 @@ def dummy_settings_dict() -> dict:
                 [255, 255, 255],
             ],
             "start_middle": True,
+            "sequential": False,
         },
         "images": {
             "sources": [
