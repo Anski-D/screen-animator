@@ -18,9 +18,9 @@ echo "=======================" | tee -a $LOG
 
 echo "Starting script" | tee -a $LOG
 $SCRIPT_BIN "$@" &
-PID=$!
-echo $PID > .pid
-echo "Running under process $PID" | tee -a $LOG
+pid=$!
+echo $pid > .pid
+echo "Running under process $pid" | tee -a $LOG
 echo -e "Use $PWD/stop_screen-animator.sh to terminate\n" | tee -a $LOG
 
 exit 0
