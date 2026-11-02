@@ -168,7 +168,6 @@ class LeftScrollingTextItemGroup(ItemGroup):
         Message is initially placed with middle-left set at the middle-right of the
         perimeter, i.e. off-screen to the right.
         """
-        messages = self._settings.messages
         self._settings_manager.set_font()
         message_text = self._settings_manager.generate_message_text()
         log.debug("Creating %s with text: %s", Item.__name__, message_text)
@@ -176,14 +175,14 @@ class LeftScrollingTextItemGroup(ItemGroup):
         self._set_outline(message_text, start_position)
         message = Item(
             self,
-            self._generate_message(message_text, messages.font),
+            self._generate_message(message_text, self._settings.runtime.font),
             self._perimeter,
             self._scrolling_movement,
         )
         message.message_text = message_text
-        message.font = messages.font
+        message.font = self._settings.runtime.font
         message.rect.midleft = start_position
-        message.rect.x += messages.outline_width
+        message.rect.x += self._settings.messages.outline_width
 
     def update(self):
         """
@@ -213,19 +212,21 @@ class LeftScrollingTextItemGroup(ItemGroup):
             self.create()
 
     def _generate_message(self, message_text: str, font: pg.Font) -> pg.Surface:
-        messages = self._settings.messages
-
-        return font.render(message_text, messages.anti_aliasing, messages.color)
+        return font.render(
+            message_text,
+            self._settings.messages.anti_aliasing,
+            self._settings.runtime.color,
+        )
 
     def _set_outline(self, message_text: str, start_position: tuple[int, int]) -> None:
         messages = self._settings.messages
         log.debug("Setting text outline with width %s", messages.outline_width)
         outline_width = messages.outline_width
         if outline_width > 0:
-            outline_text = messages.font.render(
+            outline_text = self._settings.runtime.font.render(
                 message_text,
                 messages.anti_aliasing,
-                messages.outline_color,
+                self._settings.runtime.outline_color,
             )
             angles = np.linspace(0, 360, messages.outline_copies, endpoint=False)
             x_shift = outline_width * np.cos(np.radians(angles - 90)) + outline_width
@@ -242,7 +243,9 @@ class LeftScrollingTextItemGroup(ItemGroup):
     def _calculate_start_position(self, message_text: str) -> tuple[int, int]:
         messages = self._settings.messages
         if not messages.start_middle:
-            dummy_message = self._generate_message(message_text, messages.font)
+            dummy_message = self._generate_message(
+                message_text, self._settings.runtime.font
+            )
             height = dummy_message.get_rect().height
 
             return (
@@ -292,9 +295,8 @@ class RandomImagesItemGroup(TimeableItemGroup):
 
     def create(self) -> None:
         """Create all the image items, set to move randomly within the perimeter."""
-        images = self._settings.images
-        for _ in range(images.number):
-            for image in images.images:
+        for _ in range(self._settings.images.number):
+            for image in self._settings.runtime.images:
                 log.debug("Creating `pygame` image: %s", image)
                 Item(self, image, self._perimeter, self._random_movement)
 
@@ -411,7 +413,7 @@ class FpsCounterItemGroup(ItemGroup):
     def create(self) -> None:
         """Create the fps counter."""
         fps_font = pg.font.SysFont(None, 36)
-        fps_actual = self._settings.timings.fps_actual
+        fps_actual = self._settings.runtime.fps_actual
         content = fps_font.render(f"{fps_actual:.2f}", False, (0, 0, 0))
         fps = Item(self, content, self._perimeter)
         fps.rect.x = 10

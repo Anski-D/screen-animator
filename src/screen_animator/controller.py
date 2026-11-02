@@ -53,12 +53,11 @@ class Controller:
             type(self).__name__,
             " now running, entering main loop".upper(),
         )
-        timings = self._settings.timings
         while self._initialized:
-            self._clock.tick(timings.fps)
+            self._clock.tick(self._settings.timings.fps)
             self._model.update()
             event_manager.manage_events()
-            timings.fps_actual = int(self._clock.get_fps())
+            self._settings.runtime.fps_actual = int(self._clock.get_fps())
 
         log.info("Run method complete, %s stopping", type(self).__name__)
 

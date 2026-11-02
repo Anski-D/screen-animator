@@ -14,8 +14,6 @@ log = logging.getLogger(__name__)
 
 
 class Messages(BaseModel):
-    model_config = ConfigDict(arbitrary_types_allowed=True)
-
     messages: list[str]
     separator: str = "    "
     typeface: str = "freeserif"
@@ -27,30 +25,30 @@ class Messages(BaseModel):
     outline_width: int = 3
     outline_copies: int = 360
     outline_colors: list[tuple[int, int, int]] = [(0, 0, 0)]
-    outline_color: tuple[int, int, int] = (127, 127, 127)
     start_middle: bool = True
-    color: tuple[int, int, int] = (255, 255, 255)
-    font: pg.Font | None = None
 
 
 class Images(BaseModel):
-    model_config = ConfigDict(arbitrary_types_allowed=True)
-
     sources: list[tuple[str, int]]
     number: int
     reposition_attempts: int = -1
-    images: list[pg.Surface] = []
 
 
 class Timings(BaseModel):
     fps: int = 30
-    fps_actual: int = 0
     image_change_time: int
     color_change_time: int
 
 
-class Background(BaseModel):
-    color: tuple[int, int, int] = (0, 0, 0)
+class RuntimeSettings(BaseModel):
+    model_config = ConfigDict(arbitrary_types_allowed=True)
+
+    color: tuple[int, int, int] = (255, 255, 255)
+    bg_color: tuple[int, int, int] = (0, 0, 0)
+    outline_color: tuple[int, int, int] = (127, 127, 127)
+    font: pg.Font | None = None
+    images: list[pg.Surface] = []
+    fps_actual: int = 0
 
 
 class Settings(BaseModel):
@@ -58,7 +56,7 @@ class Settings(BaseModel):
     messages: Messages
     images: Images
     timings: Timings
-    bg: Background = Background()
+    runtime: RuntimeSettings = RuntimeSettings()
 
 
 def import_settings(settings_paths: Iterable[Path | str]) -> Settings:
@@ -115,18 +113,18 @@ class SettingsManager:
     def set_colors(self) -> None:
         """Set background, text, and text outline colors from the available options
         in the settings provided."""
-        self._settings.bg.color = random.choice(self._settings.colors)
-        log.debug("Set background color to: %s", self._settings.bg.color)
+        self._settings.runtime.bg_color = random.choice(self._settings.colors)
+        log.debug("Set background color to: %s", self._settings.runtime.bg_color)
 
-        self._settings.messages.color = random.choice(self._settings.colors)
-        while self._settings.messages.color == self._settings.bg.color:
-            self._settings.messages.color = random.choice(self._settings.colors)
-        log.debug("Set text color to: %s", self._settings.messages.color)
+        self._settings.runtime.color = random.choice(self._settings.colors)
+        while self._settings.runtime.color == self._settings.runtime.bg_color:
+            self._settings.runtime.color = random.choice(self._settings.colors)
+        log.debug("Set text color to: %s", self._settings.runtime.color)
 
-        self._settings.messages.outline_color = random.choice(
+        self._settings.runtime.outline_color = random.choice(
             self._settings.messages.outline_colors
         )
-        log.debug("Set outline color as: %s", self._settings.messages.outline_color)
+        log.debug("Set outline color as: %s", self._settings.runtime.outline_color)
 
     def generate_message_text(self) -> str:
         """
@@ -145,7 +143,7 @@ class SettingsManager:
         size = random.randint(
             min(self._settings.messages.sizes), max(self._settings.messages.sizes)
         )
-        self._settings.messages.font = pg.font.Font(
+        self._settings.runtime.font = pg.font.Font(
             pg.font.match_font(
                 self._settings.messages.typeface,
                 self.settings.messages.bold,
@@ -158,7 +156,7 @@ class SettingsManager:
         self.set_colors()
         self.set_font()
         self._load_images()
-        self._settings.timings.fps_actual = self._settings.timings.fps
+        self._settings.runtime.fps_actual = self._settings.timings.fps
 
     def _load_images(self):
         if len(self._settings.images.sources) >= 1:
@@ -167,4 +165,4 @@ class SettingsManager:
             for source, width in self._settings.images.sources:
                 image = image_loader.load_image(source, width)
                 if image is not None:
-                    self._settings.images.images.append(image)
+                    self._settings.runtime.images.append(image)

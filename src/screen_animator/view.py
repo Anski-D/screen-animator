@@ -79,4 +79,4 @@ class View(Listener):
         self.update()
 
     def _set_bg(self) -> None:
-        self._display.fill(self._settings.bg.color)
+        self._display.fill(self._settings.runtime.bg_color)
