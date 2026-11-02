@@ -44,7 +44,6 @@ You might find additional dependencies are required on Raspberry Pi OS (as well 
 ## Usage
 
 In the cloned repo, example input `TOML` files are included in the `examples` directory. The examples show the inputs split across three files (inputs_*X*.toml) and also as a single file, inputs_all.toml.
-If the package is installed as recommended above, a command line script will be available that will copy an example `inputs.toml` file into your current directory.
 
 [Further information for specifying inputs in `inputs.toml` is provided.](#inputstoml)
 
@@ -95,7 +94,7 @@ Settings can be split across multiple files. Settings in later files take preced
 > The input file does not need to be called `inputs.toml`, but it is the default file the app will try to use if no input file is specified.
 
 `colors`
-: A list of colors to use in the background and text. Each color should be provided as a list of red-green-blue (RGB). At least two colors are required to prevent the package getting stuck in a loop.
+: A list of colors to use in the background and text. Each color should be provided as a three-value list representing the red-green-blue (RGB) value required. At least two colors are required to prevent the package getting stuck in a loop.
 
 `messages`
 
@@ -103,37 +102,40 @@ Settings can be split across multiple files. Settings in later files take preced
 : A list of messages to scroll across the screen. A message will be chosen at random once the previous message is fully emerged from the right-hand side of the screen.
 
 * `separator`
-: A character string that will be appended to the end of the randomly-selected message to separate it from the next randomly-selected message.
+: A character string that will be appended to the end of the randomly-selected message to separate it from the next randomly-selected message. Default: `    ` (four spaces).
 
 * `typeface`
-: The typeface to be used from the scrolling message. This should be a typeface installed on the system otherwise a fallback will be used.
+: The typeface to be used from the scrolling message. This should be a typeface installed on the system otherwise a fallback will be used. Default: `freeserif`.
 
 * `sizes`
 : A list of two integers to define the range of heights that should be used for the scrolling message. Each message will have a random height between the defined limits, and each message will be different from the last. To have messages at a constant height, set both numbers to the same value.
 
 * `bold`
-: A boolean defining whether the typeface used should be bold or not.
+: A boolean defining whether the typeface used should be bold or not. Default: `true`.
 
 * `italic`
-: A boolean defining whether the typeface used should be italic or not.
+: A boolean defining whether the typeface used should be italic or not. Default: `false`.
 
-* `anti-aliasing`
-: A boolean defining whether the text in the scrolling message should be rendered with antialiasing or not. While antialiasing will look better, it can cause significant lag and/or stuttering on devices such as a Raspberry Pi.
+* `anti_aliasing`
+: A boolean defining whether the text in the scrolling message should be rendered with antialiasing or not. While antialiasing will look better, it can cause significant lag and/or stuttering on devices such as a Raspberry Pi. Default: `false`.
 
 * `scroll_speed`
 : Speed at which the text should scroll from right to left in pixels-per-second.
 
 * `outline_width`
-: The thickness in pixels to have as an outline around the rendered letters in the scrolling message. Helps separate the text from the background. Set to `0` to turn off.
+: The thickness in pixels to have as an outline around the rendered letters in the scrolling message. Helps separate the text from the background. Set to `0` to turn off. Default: `0`.
 
 * `outline_copies`
-: Text outlines are copies of the message, rendered behind the main text. More copies looks better, but too many can cause lag/stuttering. Can also be set to `0` to turn off outline.
+: Text outlines are copies of the message, rendered behind the main text. More copies looks better, but too many can cause lag/stuttering. Can also be set to `0` to turn off outline. Default: `0`.
 
 * `outline_colors`
-: A list of colors to use as the outline. Each color should be provided as a list of RGB. At least one color should be provided, even if the `outline_width` or `outline_copies` is set to `0`,
+: A list of colors to use as the outline. Each color should be provided as an RGB triplet. Default: `[[0, 0, 0]]` (black).
 
 * `start_middle`
-: A boolean to set whether the scrolling message should always be centered vertically on the screen or can be positioned anywhere vertically.
+: A boolean to set whether the scrolling message should always be centered vertically on the screen or can be positioned anywhere vertically. Default: `true`.
+
+* `sequential`
+: Boolean for whether the messages should be shuffled and cycled through or just randomly selected (repeats possible). Default: `false`.
 
 `images`
 
@@ -144,12 +146,12 @@ Settings can be split across multiple files. Settings in later files take preced
 : Number of each image to render on the screen.
 
 * `reposition_attempts`
-: Integer value determines how many times the package should try to position all the images randomly to prevent overlaps. When there are a lot of images and/or images are large, this can be difficult. This value limits how many times the package will try to avoid overlaps for each image before moving on to the next. Negative values place no limit and could cause the animation to become stuck. Large values could cause the animations to periodically stall or essentially become stuck. Low values might result in some image overlap. A value of `0` allows uncontrolled overlap.
+: Integer value determines how many times the package should try to position all the images randomly to prevent overlaps. When there are a lot of images and/or images are large, this can be difficult. This value limits how many times the package will try to avoid overlaps for each image before moving on to the next. Negative values place no limit and could cause the animation to become stuck. Large values could cause the animations to periodically stall or essentially become stuck. Low values might result in some image overlap. A value of `0` allows uncontrolled overlap. Default: `-1`.
 
 `timings`
 
 * `fps`
-: Sets the FPS target for the animation to run out. The target keeps the animations running smoothly, but too high a value might not be achievable and could cause scroll-speed inconsistencies. Low values could cause a stuttering effect.
+: Sets the FPS target for the animation to run out. The target keeps the animations running smoothly, but too high a value might not be achievable and could cause scroll-speed inconsistencies. Low values could cause a stuttering effect. Default `30`.
 
 * `image_change_time`
 : Time in seconds between changes in image positioning.

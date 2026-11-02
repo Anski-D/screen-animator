@@ -22,8 +22,8 @@ class Messages(BaseModel):
     italic: bool = False
     anti_aliasing: bool = False
     scroll_speed: int
-    outline_width: int = 3
-    outline_copies: int = 360
+    outline_width: int = 0
+    outline_copies: int = 0
     outline_colors: list[tuple[int, int, int]] = [(0, 0, 0)]
     start_middle: bool = True
     sequential: bool = False
