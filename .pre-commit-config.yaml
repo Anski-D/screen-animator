@@ -42,3 +42,12 @@ repos:
         args: [ --fix ]
     # Run the formatter.
     -   id: ruff-format
+-   repo: local
+    hooks:
+    -   id: tox pytest slow
+        name: tox pytest slow
+        entry: tox
+        language: system
+        pass_filenames: false
+        stages:
+            - pre-push
