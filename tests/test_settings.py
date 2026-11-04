@@ -1,3 +1,6 @@
+from itertools import pairwise
+from string import ascii_letters
+
 import pygame as pg
 import pytest
 from pytest import MonkeyPatch
@@ -64,6 +67,54 @@ class TestSettingsManager:
     def test_generate_text_return_type(self, settings_manager: SettingsManager) -> None:
         """Message strings generated are of correct type."""
         assert isinstance(settings_manager.generate_message_text(), str)
+
+    def test_generate_text_sequential_no_repeats(
+        self, settings_manager: SettingsManager
+    ) -> None:
+        """Sequential strings are generated."""
+        message_list = list(ascii_letters)
+        message_settings = settings_manager.settings.messages
+        message_settings.sequential = True
+        message_settings.messages = message_list
+
+        messages = [settings_manager.generate_message_text()]
+        for _ in message_list[:-1]:
+            messages.append(settings_manager.generate_message_text())
+
+        assert all(message1 != message2 for message1, message2 in pairwise(messages))
+
+    def test_generate_text_sequential_deplete_options(
+        self, settings_manager: SettingsManager
+    ) -> None:
+        """Sequential string list gets exhausted."""
+        message_list = list(ascii_letters)
+        message_settings = settings_manager.settings.messages
+        message_settings.sequential = True
+        message_settings.messages = message_list
+
+        settings_manager.generate_message_text()
+        remaining_messages = len(settings_manager._messages)
+        while remaining_messages > 0:
+            settings_manager.generate_message_text()
+            remaining_messages -= 1
+
+        assert not settings_manager._messages
+
+    def test_generate_text_non_sequential_no_deplete_options(
+        self, settings_manager: SettingsManager
+    ) -> None:
+        """Non-sequential string list does not get exhausted."""
+        message_list = list(ascii_letters)
+        message_settings = settings_manager.settings.messages
+        message_settings.sequential = False
+        message_settings.messages = message_list
+
+        list_lengths = []
+        for _ in range(10):
+            settings_manager.generate_message_text()
+            list_lengths.append(len(settings_manager._messages))
+
+        assert all(list_length == len(message_list) for list_length in list_lengths)
 
     def test_load_images(
         self,
