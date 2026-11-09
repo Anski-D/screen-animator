@@ -2,6 +2,7 @@ import argparse
 import logging
 from collections.abc import Callable
 from functools import partial
+from pathlib import Path
 
 import pygame as pg
 
@@ -25,7 +26,7 @@ from screen_animator.speed_changer import (
 )
 from screen_animator.view import View
 
-log = logging.getLogger(__package__)
+log = logging.getLogger(getattr(__spec__, "parent", None) or Path(__file__).parent.name)
 
 DEBUG_DISPLAY_SIZE = 800, 400
 ITEM_GROUP_TYPES: list[Callable[[SettingsManager, pg.Rect], ItemGroup]] = [

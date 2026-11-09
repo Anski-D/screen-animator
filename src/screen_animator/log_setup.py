@@ -1,12 +1,10 @@
 import logging
-from pathlib import Path
 
-LOG_DIR = "logs"
-LOG_FILE = "screen-animator.log"
+LOG_FILE = f".{__spec__.parent}.log"
 
 
 def setup_logging(logging_level: str = "") -> None:
-    log = logging.getLogger(__package__)
+    log = logging.getLogger(__spec__.parent)
 
     stream_handler = logging.StreamHandler()
     stream_handler.setLevel(logging.WARNING)
@@ -15,11 +13,9 @@ def setup_logging(logging_level: str = "") -> None:
     logging_level = logging_level.upper()
     if logging_level in logging.getLevelNamesMapping():
         log.setLevel(logging_level)
-        Path(LOG_DIR).mkdir(exist_ok=True)
-        log_path = Path(LOG_DIR, LOG_FILE)
-        file_handler = logging.FileHandler(log_path)
+        file_handler = logging.FileHandler(LOG_FILE)
         formatter = logging.Formatter(
-            "[%(levelname)s] [%(asctime)s] [%(name)s] %(message)s"
+            "[%(asctime)s] [%(levelname)s] [%(name)s] : %(message)s"
         )
         file_handler.setFormatter(formatter)
         file_handler.setLevel(logging_level)
@@ -28,6 +24,6 @@ def setup_logging(logging_level: str = "") -> None:
         log.info(50 * "=")
         log.info(
             "Logging to %s at %s level",
-            log_path,
+            LOG_FILE,
             logging.getLevelName(log.getEffectiveLevel()),
         )
